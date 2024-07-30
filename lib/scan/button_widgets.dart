@@ -38,7 +38,7 @@ class AnalyzeImageFromGalleryButton extends StatelessWidget {
           onDetect?.call(barcodes);
         } else {
           const SnackBar snackbar = SnackBar(
-            content: Text('未找到条码信息!'),
+            content: Text('无法识别到二维码，请选择其他图片!'),
             backgroundColor: Colors.red,
           );
 
