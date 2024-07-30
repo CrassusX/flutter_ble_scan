@@ -87,14 +87,19 @@ class BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              height: 70,
+              color: Colors.black.withOpacity(0.8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ToggleFlashlightButton(controller: controller),
                   SwitchCameraButton(controller: controller),
-                  AnalyzeImageFromGalleryButton(controller: controller, onDetect: _handleBarcode,),
+                  AnalyzeImageFromGalleryButton(
+                    controller: controller,
+                    onDetect: _handleBarcode,
+                  ),
                 ],
               ),
             ),

@@ -12,13 +12,13 @@ class ScannerErrorWidget extends StatelessWidget {
 
     switch (error.errorCode) {
       case MobileScannerErrorCode.controllerUninitialized:
-        errorMessage = 'Controller not ready.';
+        errorMessage = '控制器没被初始化.';
       case MobileScannerErrorCode.permissionDenied:
-        errorMessage = 'Permission denied';
+        errorMessage = '扫描权限被拒';
       case MobileScannerErrorCode.unsupported:
-        errorMessage = 'Scanning is unsupported on this device';
+        errorMessage = '设备不支持扫描！';
       default:
-        errorMessage = 'Generic Error';
+        errorMessage = '';
         break;
     }
 
