@@ -34,9 +34,7 @@ class LoadingDialog {
             children: [
               Container(
                 padding: const EdgeInsets.all(20),
-                constraints: BoxConstraints(
-                  minWidth: 280.rpx
-                ),
+                constraints: BoxConstraints(minWidth: 280.rpx),
                 decoration: BoxDecoration(
                     color: Colors.black45,
                     borderRadius: BorderRadius.circular(8)),
@@ -133,8 +131,9 @@ Future showInputCustomDialog(BuildContext context,
                         // completer.completeError("用户 cancel");
                       },
                       style: ButtonStyle(
-                          foregroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor),),
+                        foregroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
                       child: Text('取消'),
                     ),
                   ),
@@ -143,16 +142,17 @@ Future showInputCustomDialog(BuildContext context,
                     child: ElevatedButton(
                       onPressed: () {
                         // 处理确定按钮点击事件
-                        String value = textEditingController.text;// 关闭提示框
+                        String value = textEditingController.text; // 关闭提示框
                         Navigator.of(context).pop("$value");
                         // textEditingController.dispose();
                         // completer.complete(value);
                       },
                       style: ButtonStyle(
-                          foregroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor),),
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
                       child: Text('确定'),
                     ),
                   )
@@ -165,4 +165,22 @@ Future showInputCustomDialog(BuildContext context,
     },
   );
   // return completer.future;
+}
+
+bool isSuccessfulScan(String? code) {
+  if (code == null ||  code.length < 2) {
+    return false; // 扫码失败，码长度不足
+  }
+
+  String firstLetter = code.substring(0, 1);
+  if (firstLetter == 'Z' ||
+      firstLetter == 'D' ||
+      firstLetter == 'T' ||
+      firstLetter == 'Y' ||
+      firstLetter == 'X' ||
+      firstLetter == 'M') {
+    return true; // 扫码成功
+  } else {
+    return false; // 扫码失败，不符合设备码前缀要求
+  }
 }

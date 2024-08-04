@@ -12,6 +12,8 @@ import '../../event/UpdateEvent.dart';
 import '../../lib/ble.dart' as ble;
 
 class UpgradeWidget extends StatefulWidget {
+  const UpgradeWidget({super.key});
+
   @override
   _UpgradeWidgetState createState() => _UpgradeWidgetState();
 }
@@ -38,8 +40,8 @@ class _UpgradeWidgetState extends State<UpgradeWidget> {
         fileList = value.data["data"].cast<String>();
       });
     }).catchError((e) {
-      print("文件列表获取失败 $e");
-      showToast("文件列表获取失败 $e");
+      // print("文件列表获取失败 $e");
+      // showToast("文件列表获取失败 $e");
     });
   }
 

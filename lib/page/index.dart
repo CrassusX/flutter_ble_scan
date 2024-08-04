@@ -3,8 +3,11 @@ import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/dio/dio.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:flutter_ble_scan/scan/scanner_overlay.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../common/FitTool.dart';
@@ -47,7 +50,7 @@ class _indexState extends State<index> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    findInputC.text = "a";
+    findInputC.text = "AITH";
     isText = true;
     ble.findInput = findInputC.text;
     ble.start(findCall);
@@ -586,10 +589,21 @@ class _indexState extends State<index> {
         builder: (context) => const BarcodeScannerWithOverlay(),
       ),
     );
-    // _counter = code ?? '';
-    // setState(() {
-
-    // });
+    if (isSuccessfulScan(code)) {
+      var resp = await ApiService.getDeviceInfo(code!);
+      if (resp != null) {
+        var deviceInfo = DeviceInfo.fromJson(resp);
+        if (deviceInfo.data?.macAddress != null) {
+          // 查找的mac 地址连接
+          var macAddrss = deviceInfo.data?.getMacAddrss;
+          var device = devices
+              .firstWhereOrNull((element) => element?['id'] == macAddrss);
+          if (device != null) {
+            toConnectToDevice(device['device']);
+          }
+        }
+      }
+    }
   }
 
   @override

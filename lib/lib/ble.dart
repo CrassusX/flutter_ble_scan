@@ -18,10 +18,10 @@ String myuuid = "00000001-0000-1000-8000-00805F9B34FB";
 
 int closeTime = 20000;
 
-Map devices = Map();
+Map devices = {};
 
 Map<String, ConnectedDeviceProp> connectList =
-    Map<String, ConnectedDeviceProp>();
+    <String, ConnectedDeviceProp>{};
 
 start(Function fun) {
   findCall = fun;
