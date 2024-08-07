@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // 二维码扫描成功
 class QRScanSuccess extends StatelessWidget {
@@ -15,17 +16,16 @@ class QRScanSuccess extends StatelessWidget {
           alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
           children: <Widget>[
             Positioned(
-              top: -60,
-              left: 24,
-              right: 24,
-              bottom: 20,
+              top: -40,
+              left: 0,
+              right: 0,
+              bottom: 0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Image.asset(
                     'images/success.png', // 图片路径
-                    width: 100, // 设置图片宽度
                     height: 100, // 设置图片高度
                   ),
                   const Text(
@@ -35,8 +35,8 @@ class QRScanSuccess extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(
-                    height: 16,
+                   SizedBox(
+                    height: Get.height * 0.1,
                   ),
                   Image.asset(
                     'images/seat.png', // 图片路径
