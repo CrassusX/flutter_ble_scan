@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,16 +7,16 @@ import '../../common/util.dart';
 import '../../controller/GlobalController.dart';
 import '../../dio/dio.dart';
 import '../../event/UpdateEvent.dart';
-import '../../lib/ble.dart' as ble;
+import 'package:flutter_ble_scan/lib/ble.dart' as ble;
 
 class UpgradeWidget extends StatefulWidget {
   const UpgradeWidget({super.key});
 
   @override
-  _UpgradeWidgetState createState() => _UpgradeWidgetState();
+  UpgradeWidgetState createState() => UpgradeWidgetState();
 }
 
-class _UpgradeWidgetState extends State<UpgradeWidget> {
+class UpgradeWidgetState extends State<UpgradeWidget> {
   List<String> fileList = [];
   int fileIndex = -1;
   int speedIndex = 0;
@@ -123,15 +121,15 @@ class _UpgradeWidgetState extends State<UpgradeWidget> {
       children: [
         ElevatedButton(
           onPressed: showFileList,
-          child: Text('刷新文件列表'),
+          child: const Text('刷新文件列表'),
         ),
         ElevatedButton(
           onPressed: () => update(true),
-          child: Text('断点升级'),
+          child: const Text('断点升级'),
         ),
         ElevatedButton(
           onPressed: () => update(false),
-          child: Text('升级'),
+          child: const Text('升级'),
         ),
       ],
     );
@@ -202,7 +200,7 @@ class _UpgradeWidgetState extends State<UpgradeWidget> {
 
   void toSendString(List<int> data, bool isBreak) {
     var jvalue = Get.find<GlobalController>().updateDevice['sendSuccess'];
-    int jindu = jvalue == null ? 0 : jvalue;
+    int jindu = jvalue ?? 0;
     Get.find<GlobalController>()
         .connectedDeviceProp
         ?.write3OfString("blog disable");
@@ -213,10 +211,11 @@ class _UpgradeWidgetState extends State<UpgradeWidget> {
     String crc16 = calculateCRC16Modbus(currentFile);
     int step = ((packctNum - 12 - 7 - 61) * 0.75).floor() - 1;
     int x = 0;
+    // ignore: unused_local_variable
     int startIndex = 0;
     List<String> updateArr = [];
     String startString =
-        "${data.length},$crc16,${this.speedList[this.speedIndex]},startDeviceUpdate:${(data.length / step).ceil()}";
+        "${data.length},$crc16,${speedList[speedIndex]},startDeviceUpdate:${(data.length / step).ceil()}";
     print(startString);
     onMessageCode3(startString);
 

@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 import '../controller/GlobalController.dart';
 import '../dio/dio.dart';
 
-class login extends StatefulWidget {
-  const login({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<login> createState() => _loginState();
+  State<Login> createState() => LoginState();
 }
 
-class _loginState extends State<login> {
+class LoginState extends State<Login> {
   final usernameC = TextEditingController();
   final pwdC = TextEditingController();
 

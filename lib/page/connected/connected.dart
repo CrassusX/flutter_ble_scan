@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../common/FitTool.dart';
 import '../../controller/GlobalController.dart';
-import '../../lib/ble.dart' as ble;
-import '../../lib/Websocket.dart';
+import 'package:flutter_ble_scan/lib/ble.dart' as ble;
+import 'package:flutter_ble_scan/lib/Websocket.dart';
 import '../../page/connected/update.dart';
 
 class Connected extends StatefulWidget {
-  Function onDisConnected;
-  WebsocketProp websocketProp;
-  Connected({
+ final  Function onDisConnected;
+ final  WebsocketProp websocketProp;
+  const Connected({
     super.key,
     required this.onDisConnected,
     required this.websocketProp,
@@ -39,7 +39,7 @@ class ConnectedState extends State<Connected> {
   String id = "";
   String name = "";
   final TextEditingController _textController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   List logList = [];
   int currentType = 1;
@@ -142,7 +142,7 @@ class ConnectedState extends State<Connected> {
     DateTime now = DateTime.now();
     String formattedDate =
         '${now.year}-${_twoDigits(now.month)}-${_twoDigits(now.day)} ${_twoDigits(now.hour)}:${_twoDigits(now.minute)}:${_twoDigits(now.second)}';
-    return formattedDate + ' ';
+    return '$formattedDate ';
   }
 
   String _twoDigits(int n) {
@@ -173,7 +173,7 @@ class ConnectedState extends State<Connected> {
         },
         child: Container(
           height: 30,
-          margin: EdgeInsets.only(top: 10, bottom: 10),
+          margin: const EdgeInsets.only(top: 10, bottom: 10),
           decoration: currentType == type
               ? BoxDecoration(
                   color: Colors.blue,
@@ -271,7 +271,7 @@ class ConnectedState extends State<Connected> {
               ),
               Align(
                 alignment: Alignment.centerLeft,
-                child: Obx(() => updateDevice['isUpdate'] == true ? Text("升级中：${updateDevice['sendSuccess']}/${updateDevice['sum']}", style: TextStyle(fontSize: 22.rpx)):Text("")),
+                child: Obx(() => updateDevice['isUpdate'] == true ? Text("升级中：${updateDevice['sendSuccess']}/${updateDevice['sum']}", style: TextStyle(fontSize: 22.rpx)):const Text("")),
               ),
               getlistbtn(),
               Flexible(
@@ -308,7 +308,7 @@ class ConnectedState extends State<Connected> {
                 flex: currentType == 2 ? 1000 : 1,
                 child: Offstage(
                   offstage: currentType != 2,
-                  child: UpgradeWidget(),
+                  child: const UpgradeWidget(),
                 ),
               ),
               Flexible(
@@ -316,19 +316,19 @@ class ConnectedState extends State<Connected> {
                 child: Offstage(
                   offstage: currentType != 3,
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(20, 0, 20, 6),
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 6),
                     child: Column(
                       children: [
                         InkWell(
                           onTap: () {
                             Get.toNamed("/wifi");
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 50,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("WIFI配网"),
+                                const Text("WIFI配网"),
                                 Image.asset("images/right.png")
                               ],
                             ),

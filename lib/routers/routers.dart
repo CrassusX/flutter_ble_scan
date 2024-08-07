@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import '../page/connected/wifi.dart';
 import '../page/index.dart';
 import '../page/login.dart';
-import '../page/test.dart';
 
 var routes = {
-  "/login": (contxt) => const login(),
+  "/login": (contxt) => const Login(),
   "/index": (contxt) => const index(),
-  "/test": (context) => const testone(),
   "/wifi": (context) => const Wifi()
 };
 
