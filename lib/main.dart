@@ -9,7 +9,7 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 void main() async {
   await GetStorage.init();
-  runApp(MyHomePage());
+  runApp(const MyHomePage());
 }
 
 class MyHomePage extends StatefulWidget {
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue, foregroundColor: Colors.white),
         ),
         onGenerateRoute: onGenerateRoute,
-        initialRoute: "/index",
+        initialRoute: "/qrScanSuccess",
         // home: MyApp(),
       );
     }

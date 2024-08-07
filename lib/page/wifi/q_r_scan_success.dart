@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+
+// 二维码扫描成功
+class QRScanSuccess extends StatelessWidget {
+  final Map? data;
+  const QRScanSuccess({super.key, this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: //通过ConstrainedBox来确保Stack占满屏幕
+          ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: Stack(
+          alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
+          children: <Widget>[
+            Positioned(
+              top: -60,
+              left: 24,
+              right: 24,
+              bottom: 20,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'images/success.png', // 图片路径
+                    width: 100, // 设置图片宽度
+                    height: 100, // 设置图片高度
+                  ),
+                  const Text(
+                    '扫码完成',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Image.asset(
+                    'images/seat.png', // 图片路径
+                    height: 80, // 设置图片高度
+                  ),
+                  const Text(
+                    '健康评估垫', // 或 智能睡测仪
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const Text(
+                    '设备号：Z1234567890',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  FilledButton.tonal(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStatePropertyAll(Colors.grey.shade300)),
+                      onPressed: () {},
+                      child: const Text('确认无误，下一步',
+                          style: TextStyle(color: Color.fromARGB(255, 80, 179, 146), fontSize: 16)))
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
