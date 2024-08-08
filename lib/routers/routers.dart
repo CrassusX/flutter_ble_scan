@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_ble_scan/page/wifi/q_r_scan_success.dart';
+import 'package:flutter_ble_scan/page/wifi/qr_scan_success.dart';
+import 'package:flutter_ble_scan/page/wifi/setting_wifi.dart';
 import '../page/connected/wifi.dart';
 import '../page/index.dart';
 import '../page/login.dart';
@@ -8,7 +9,8 @@ var routes = {
   "/login": (contxt) => const Login(),
   "/index": (contxt) => const index(),
   "/wifi": (context) => const Wifi(), 
-  "/qrScanSuccess": (context) => const QRScanSuccess(),    
+  "/qrScanSuccess": (context) => const QRScanSuccess(),   
+   "/settingWifi": (context) => const SettingWifi(),   
 };
 
 //2、配置onGenerateRoute  固定写法  这个方法也相当于一个中间件，这里可以做权限判断

@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue, foregroundColor: Colors.white),
         ),
         onGenerateRoute: onGenerateRoute,
-        initialRoute: "/qrScanSuccess",
+        initialRoute: "/settingWifi",
         // home: MyApp(),
       );
     }
