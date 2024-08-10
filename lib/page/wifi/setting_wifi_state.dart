@@ -62,7 +62,7 @@ class VerticalPageControlState extends State<VerticalPageControl> {
   @override
   void didUpdateWidget(covariant VerticalPageControl oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.hasComplete != widget.hasComplete && widget.hasComplete){
+    if (oldWidget.hasComplete != widget.hasComplete && widget.hasComplete) {
       setState(() {
         _timer.cancel();
       });
@@ -95,7 +95,9 @@ class VerticalPageControlState extends State<VerticalPageControl> {
           dotsCount: 3,
           position: _currentPage,
           decorator: DotsDecorator(
-            color: widget.hasComplete ? normalColor : Colors.grey, // Inactive color
+            color: widget.hasComplete
+                ? normalColor
+                : Colors.grey, // Inactive color
             activeColor: normalColor,
           ),
         ),
@@ -106,7 +108,8 @@ class VerticalPageControlState extends State<VerticalPageControl> {
 
 class VerticalProgressTip extends StatelessWidget {
   final double progress; // 进度百分比，范围为0到1
-  const VerticalProgressTip({super.key, this.progress = 0});
+  final Function()? onCompleted;
+  const VerticalProgressTip({super.key, this.progress = 0, this.onCompleted});
 
   bool get hasComplete => progress >= 100;
 
@@ -125,11 +128,11 @@ class VerticalProgressTip extends StatelessWidget {
             children: const [
               TextSpan(
                   text: '%',
-                  style: TextStyle(fontSize: 16, color: Colors.black))
+                  style: TextStyle(fontSize: 20, color: Colors.black))
             ]),
       ),
-      const Text("设备联网中...",
-          style: TextStyle(color: Colors.black, fontSize: 16)),
+      Text(hasComplete ? "配网已完成" : "设备联网中...",
+          style: const TextStyle(color: Colors.grey, fontSize: 16)),
       const SizedBox(
         height: 20,
       ),
@@ -138,7 +141,7 @@ class VerticalProgressTip extends StatelessWidget {
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStatePropertyAll(Colors.grey.shade300)),
-              onPressed: () {},
+              onPressed: onCompleted,
               child: const Text('完成',
                   style: TextStyle(
                       color: Color.fromARGB(255, 80, 179, 146), fontSize: 16)))
