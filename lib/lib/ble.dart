@@ -35,7 +35,6 @@ void requestBluetoothPermission() async {
   PermissionStatus status3 = await Permission.bluetoothConnect.status;
 
   if (status1.isGranted && status2.isGranted && status3.isGranted) {
-    print('Bluetooth permissions granted.');
     startBluetoothScanning();
   } else {
     PermissionStatus? result1;

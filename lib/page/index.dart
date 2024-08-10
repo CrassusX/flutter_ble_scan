@@ -13,8 +13,8 @@ import '../common/util.dart';
 import '../controller/GlobalController.dart';
 import '../event/DisConnectedEvent.dart';
 import '../event/UpdateEvent.dart';
-import '../lib/ble.dart' as ble;
-import '../lib/Websocket.dart';
+import 'package:flutter_ble_scan/lib/ble.dart' as ble;
+import 'package:flutter_ble_scan/lib/Websocket.dart';
 import '../page/connected/connected.dart';
 
 class index extends StatefulWidget {
