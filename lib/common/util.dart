@@ -182,4 +182,4 @@ bool isSuccessfulScan(String? code) {
 }
 
 Color get normalColor => const Color.fromARGB(255, 80, 179, 146);
-Color get greyColor =>  Colors.grey;
+Color get greyColor =>  Colors.grey.shade100;

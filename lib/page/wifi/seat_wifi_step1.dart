@@ -64,7 +64,7 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
                     }),
                   ), // 复选框
                   InkWell(
-                      onTap: _onChecked(!_hasChecked),
+                      onTap: () => _onChecked(!_hasChecked),
                       child: const Text('确认蓝牙已开后')), // 文字描述
                 ],
               ),
