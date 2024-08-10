@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/dio/dio.dart';
 import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:flutter_ble_scan/scan/scanner_overlay.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../common/FitTool.dart';
@@ -300,7 +298,7 @@ class _indexState extends State<index> {
   Widget getSlider() {
     return Row(
       children: [
-        Text("信号强度"),
+        const Text("信号强度"),
         Expanded(
           child: SliderTheme(
             data: SliderThemeData(
@@ -357,7 +355,7 @@ class _indexState extends State<index> {
                   }
                 });
                 ble.findInput = value;
-                websocketProp?.sendWebSocketMessageCodeN(
+                websocketProp.sendWebSocketMessageCodeN(
                   7,
                   {
                     "findInput": findInputC.text,
@@ -369,13 +367,13 @@ class _indexState extends State<index> {
               controller: findInputC,
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
-                border: UnderlineInputBorder(),
+                border: const UnderlineInputBorder(),
                 fillColor: Colors.transparent,
                 filled: true,
                 hintText: '输入关键字',
-                contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                contentPadding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.clear),
+                  icon: const Icon(Icons.clear),
                   color: isText ? null : Colors.transparent,
                   onPressed: () {
                     findInputC.clear();
@@ -457,9 +455,9 @@ class _indexState extends State<index> {
     return Row(
       children: [
         Text(label),
-        SizedBox(width: 2.0),
+        const SizedBox(width: 2.0),
         Text(value.toString()),
-        SizedBox(width: 16.0),
+        const SizedBox(width: 16.0),
       ],
     );
   }
@@ -586,7 +584,7 @@ class _indexState extends State<index> {
   void _toQrCode() async {
     String? code = await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const BarcodeScannerWithOverlay(),
+        builder: (context) => const QrcodeScanner(),
       ),
     );
     if (isSuccessfulScan(code)) {
@@ -624,7 +622,7 @@ class _indexState extends State<index> {
               child: const Icon(Icons.add),
             ),
             body: Padding(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(children: [
                 getSlider(),
                 getInput(),

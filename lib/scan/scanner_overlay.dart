@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-
-// import 'barcode_label.dart';
 import 'button_widgets.dart';
 import 'error_widget.dart';
 
-class BarcodeScannerWithOverlay extends StatefulWidget {
-  const BarcodeScannerWithOverlay({super.key});
+class QrcodeScanner extends StatefulWidget {
+  const QrcodeScanner({super.key});
 
   @override
-  BarcodeScannerWithOverlayState createState() =>
-      BarcodeScannerWithOverlayState();
+  QrcodeScannerState createState() =>
+      QrcodeScannerState();
 }
 
-class BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
+class QrcodeScannerState extends State<QrcodeScanner> {
   final MobileScannerController controller = MobileScannerController(
     formats: const [BarcodeFormat.qrCode],
   );

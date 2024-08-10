@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:get/get.dart';
 
 // 二维码扫描成功
 class SeatWifiStep1 extends StatefulWidget {
@@ -14,7 +15,9 @@ class SeatWifiStep1 extends StatefulWidget {
 class _SeatWifiStep1State extends State<SeatWifiStep1> {
   bool _hasChecked = false;
 
-  _onScanTap() {}
+  _onScanTap() {
+    Get.toNamed('/qrScan');
+  }
 
   _onChecked(bool? value) {
     setState(() {
