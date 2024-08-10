@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:flutter_ble_scan/controller/SettingWifiService.dart';
 import 'package:get/get.dart';
 
 // 二维码扫描成功
@@ -14,10 +15,6 @@ class SeatWifiStep1 extends StatefulWidget {
 
 class _SeatWifiStep1State extends State<SeatWifiStep1> {
   bool _hasChecked = false;
-
-  _onScanTap() {
-    Get.toNamed('/qrScan');
-  }
 
   _onChecked(bool? value) {
     setState(() {
@@ -36,7 +33,7 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                onTap: _hasChecked ? _onScanTap : null,
+                onTap: _hasChecked ? GetSettingWifiService.to.onGoScanWifi : null,
                 child: Image.asset(
                   'images/success.png', // 图片路径
                   height: 100, // 设置图片高度
