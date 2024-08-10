@@ -14,7 +14,13 @@ class SeatWifiStep1 extends StatefulWidget {
 class _SeatWifiStep1State extends State<SeatWifiStep1> {
   bool _hasChecked = false;
 
-  _onScanTap(){}
+  _onScanTap() {}
+
+  _onChecked(bool? value) {
+    setState(() {
+      _hasChecked = value!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,28 +41,33 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
               ), // 图片
               const SizedBox(height: 16), // 间距
               const Text('请确认蓝牙开后状态后点击扫码'), // 文字描述
-              Visibility(
-                visible: _hasChecked,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text("请确保设备处于通电状态", style: TextStyle(color: greyColor)),
-                ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: _hasChecked
+                    ? Text("请确保设备处于通电状态", style: TextStyle(color: greyColor))
+                    : const SizedBox(
+                        height: 20,
+                      ),
               ),
               const SizedBox(height: 40), // 间距
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: _hasChecked,
-                    onChanged: (value) {
-                      setState(() {
-                        _hasChecked = value!;
-                      });
-                    },
-                    fillColor: MaterialStateProperty.all(normalColor),
-                  ), // 复选框
-                  const Text('确认蓝牙已开后'), // 文字描述
-                ],
+              InkWell(
+                onTap: () => _onChecked(!_hasChecked),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                      value: _hasChecked,
+                      onChanged: _onChecked,
+                      fillColor: MaterialStateProperty.resolveWith((states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return normalColor;
+                        }
+                        return greyColor;
+                      }),
+                    ), // 复选框
+                    const Text('确认蓝牙已开后'), // 文字描述
+                  ],
+                ),
               ),
             ],
           ),
