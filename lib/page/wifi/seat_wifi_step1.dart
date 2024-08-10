@@ -50,24 +50,23 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
                       ),
               ),
               const SizedBox(height: 40), // 间距
-              InkWell(
-                onTap: () => _onChecked(!_hasChecked),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Checkbox(
-                      value: _hasChecked,
-                      onChanged: _onChecked,
-                      fillColor: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.selected)) {
-                          return normalColor;
-                        }
-                        return greyColor;
-                      }),
-                    ), // 复选框
-                    const Text('确认蓝牙已开后'), // 文字描述
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Checkbox(
+                    value: _hasChecked,
+                    onChanged: _onChecked,
+                    fillColor: MaterialStateProperty.resolveWith((states) {
+                      if (states.contains(MaterialState.selected)) {
+                        return normalColor;
+                      }
+                      return greyColor;
+                    }),
+                  ), // 复选框
+                  InkWell(
+                      onTap: _onChecked(!_hasChecked),
+                      child: const Text('确认蓝牙已开后')), // 文字描述
+                ],
               ),
             ],
           ),
