@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'setting_wifi_state.dart';
+import 'seat_wifi_step3_child.dart';
 
 // 二维码扫描成功
 class SettingWifi extends StatelessWidget {
