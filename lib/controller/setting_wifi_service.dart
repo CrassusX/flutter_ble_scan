@@ -1,10 +1,12 @@
-import 'package:flutter_ble_scan/common/util.dart';
 import 'package:get/get.dart';
 import 'package:flutter_ble_scan/lib/ble.dart' as ble;
 
 class GetSettingWifiService extends GetxService {
   // 单利初始化
   static GetSettingWifiService get to => Get.find();
+
+  final RxList mBleList = [].obs;
+
 
   @override
   void onInit() {
@@ -47,11 +49,15 @@ class GetSettingWifiService extends GetxService {
 
   // 开始蓝牙扫描
   _startScanBle() {
-    ble.findInput = 'AITH';
-    ble.start((List bleList){
-      print("bleList $bleList");
+    // ble.findInput = 'AITH';
+    ble.start((List bleList) {
+      if (bleList.isNotEmpty) {
+        print("bleList $bleList");
+        mBleList.value = bleList;
+      }
     });
   }
+
   // 连接蓝牙设备
   _connectBle() {}
   // 断开设备连接

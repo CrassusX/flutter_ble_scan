@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ble_scan/controller/SettingWifiService.dart';
+import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '/common/FitTool.dart';
