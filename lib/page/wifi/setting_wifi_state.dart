@@ -1,8 +1,7 @@
 import 'dart:async';
-
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:flutter_ble_scan/common/util.dart';
 
 class SettingWifiState extends StatefulWidget {
   const SettingWifiState({super.key});
@@ -17,16 +16,30 @@ class SettingWifiStateState extends State<SettingWifiState> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        VerticalPageControl(
-          progress: progress,
+        Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(top: 10),
+              child: VerticalPageControl(
+                hasComplete: progress >= 100,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Image.asset(
+                'images/wifi.png', // 图片路径
+                height: 50, // 设置图片高度
+              ),
+            ),
+          ],
         ),
-        SvgPicture.asset(
-          'images/wifi4.svg', // 图片路径
-          height: 50, // 设置图片高度
-        ),
-        VerticalProgressTip(
-          progress: progress,
+        SizedBox(
+          height: 220,
+          child: VerticalProgressTip(
+            progress: progress,
+          ),
         )
       ],
     );
@@ -34,8 +47,9 @@ class SettingWifiStateState extends State<SettingWifiState> {
 }
 
 class VerticalPageControl extends StatefulWidget {
-  final double progress; // 进度百分比，范围为0到1
-  const VerticalPageControl({super.key, this.progress = 0});
+  final bool hasComplete; // 进度百分比，范围为0到1
+
+  const VerticalPageControl({super.key, this.hasComplete = false});
 
   @override
   State<VerticalPageControl> createState() => VerticalPageControlState();
@@ -43,18 +57,24 @@ class VerticalPageControl extends StatefulWidget {
 
 class VerticalPageControlState extends State<VerticalPageControl> {
   late Timer _timer;
-  double _currentProgress = 0;
+  int _currentPage = 0;
+
+  @override
+  void didUpdateWidget(covariant VerticalPageControl oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.hasComplete != widget.hasComplete && widget.hasComplete){
+      setState(() {
+        _timer.cancel();
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        _currentProgress += 10; // 每次增加10%
-        if (_currentProgress >= 100) {
-          _currentProgress = 100; // 限制进度不超过100%
-          _timer.cancel(); // 停止定时器
-        }
+        _currentPage = (_currentPage + 1) % 3; // 循环变化页面索引
       });
     });
   }
@@ -65,34 +85,21 @@ class VerticalPageControlState extends State<VerticalPageControl> {
     super.dispose();
   }
 
-  Color getColor(int index) {
-    double percentage = _currentProgress / 100; // 将进度数值转换为百分比
-    if (percentage >= 1.0) {
-      return Colors.green; // 进度100%时，所有圆点为绿色
-    } else {
-      if ((percentage * 3).ceil() >= index + 1) {
-        return Colors.green; // 根据进度百分比来切换圆点颜色
-      } else {
-        return Colors.grey;
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(3, (index) {
-        return Container(
-          width: 10,
-          height: 10,
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: getColor(index),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Transform.rotate(
+        angle: 1.5708, // 旋转90度，即将视图变为垂直方向
+        child: DotsIndicator(
+          dotsCount: 3,
+          position: _currentPage,
+          decorator: DotsDecorator(
+            color: widget.hasComplete ? normalColor : Colors.grey, // Inactive color
+            activeColor: normalColor,
           ),
-        );
-      }),
+        ),
+      ),
     );
   }
 }
@@ -113,13 +120,18 @@ class VerticalProgressTip extends StatelessWidget {
                 color: hasComplete
                     ? const Color.fromARGB(255, 80, 179, 146)
                     : Colors.black,
-                fontSize: 32,
+                fontSize: 42,
                 fontWeight: FontWeight.bold),
             children: const [
               TextSpan(
                   text: '%',
                   style: TextStyle(fontSize: 16, color: Colors.black))
             ]),
+      ),
+      const Text("设备联网中...",
+          style: TextStyle(color: Colors.black, fontSize: 16)),
+      const SizedBox(
+        height: 20,
       ),
       hasComplete
           ? FilledButton.tonal(
@@ -130,12 +142,12 @@ class VerticalProgressTip extends StatelessWidget {
               child: const Text('完成',
                   style: TextStyle(
                       color: Color.fromARGB(255, 80, 179, 146), fontSize: 16)))
-          : Text(
+          : const Text(
               '请确保无线网络畅通',
               style: TextStyle(
-                  color: Colors.grey.shade500,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500),
             ),
     ]);
   }
