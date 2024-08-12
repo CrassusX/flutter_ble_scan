@@ -237,6 +237,82 @@ class GetSettingWifiService extends GetxService {
     }
   }
 
+  List wifiList = [];
+  // 获取WiFi列表
+  getWifiList() {
+    LoadingDialog.show("扫描WIFI列表中");
+    String log = "";
+    logAdd(l) {
+      log += l;
+    }
+    currentConnectedDeviceProp?.receiveLogArr.add(logAdd);
+    currentConnectedDeviceProp?.write3OfString("wscan scan", success: () {
+      Timer.periodic(const Duration(milliseconds: 1500), (timer) {
+        if (timer.tick > 6) {
+          timer.cancel();
+          currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
+          LoadingDialog.hide();
+        }
+        Iterable<RegExpMatch> a =
+            RegExp(r'ITEM:SSID=([^\t]*)\s*RSSI=(\S*)\s*(,\s*auth\s*=\s*(\S*))?')
+                .allMatches(log);
+        if (a.isEmpty == false) {
+          List arr = [];
+          for (RegExpMatch one in a) {
+            arr.add({"name": one[1], "num": one[2], "auth": one[4]});
+          }
+          LoadingDialog.hide();
+
+          wifiList = arr;
+          currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
+          timer.cancel();
+        }
+      });
+    }, fail: () {
+      currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
+      LoadingDialog.hide();
+    });
+  }
+
+  // 点击WiFi连接
+  _connectWifi(String v, Map item) {
+    LoadingDialog.show("WIFI连接中");
+    String log = "";
+    logFun(l) {
+      log += l;
+    }
+
+    String d =
+        // ignore: prefer_interpolation_to_compose_strings
+        "${'${'vtouch save update .wifi.sta.ssid="' + item['name']}" .wifi.sta.pwd="' + v}\"";
+    if (item['auth'] != null) {
+      // ignore: prefer_interpolation_to_compose_strings
+      d += " -a -i .wifi.sta.auth=" + item['auth'];
+    }
+    currentConnectedDeviceProp?.receiveLogArr.add(logFun);
+    print(d);
+    currentConnectedDeviceProp?.write3OfString(d, success: () {
+      Timer.periodic(const Duration(milliseconds: 1500), (timer) {
+        currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
+        if (timer.tick > 7) {
+          LoadingDialog.hide();
+          timer.cancel();
+          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          showToast("连接失败");
+        }
+        RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
+        if (m != null && m[1] != null && m[1] == 'connect') {
+          LoadingDialog.hide();
+          timer.cancel();
+          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          showToast("连接成功");
+          Get.back();
+        }
+        log = "";
+      });
+    });
+  }
+
   // 其他方法
   Future<String?> getId() async {
     GetStorage box = GetStorage();
