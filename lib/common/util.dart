@@ -181,5 +181,13 @@ bool isSuccessfulScan(String? code) {
   }
 }
 
-Color get normalColor => const Color.fromARGB(255, 80, 179, 146);
+Color get normalColor => colorFromHex(#77B9A8);
 Color get greyColor =>  Colors.grey.shade100;
+
+Color colorFromHex(String hexColor) {
+  hexColor = hexColor.replaceAll('#', '');
+  if (hexColor.length == 6) {
+    hexColor = 'FF$hexColor'; // 添加透明度值FF
+  }
+  return Color(int.parse(hexColor, radix: 16));
+}
