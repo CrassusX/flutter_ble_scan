@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 
 // 二维码扫描成功
 class SeatWifiStep2 extends StatelessWidget {
-  final Map? data;
-  const SeatWifiStep2({super.key, this.data});
+ final  String? deviceId;
+  const SeatWifiStep2({super.key, this.deviceId});
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class SeatWifiStep2 extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                   SizedBox(
+                  SizedBox(
                     height: Get.height * 0.1,
                   ),
                   Image.asset(
@@ -49,9 +50,9 @@ class SeatWifiStep2 extends StatelessWidget {
                       color: Colors.black,
                     ),
                   ),
-                  const Text(
-                    '设备号：Z1234567890',
-                    style: TextStyle(
+                  Text(
+                    '设备号：$deviceId',
+                    style: const TextStyle(
                         fontSize: 20,
                         color: Colors.black,
                         fontWeight: FontWeight.bold),
@@ -65,7 +66,9 @@ class SeatWifiStep2 extends StatelessWidget {
                               MaterialStatePropertyAll(Colors.grey.shade300)),
                       onPressed: () {},
                       child: const Text('确认无误，下一步',
-                          style: TextStyle(color: Color.fromARGB(255, 80, 179, 146), fontSize: 16)))
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 80, 179, 146),
+                              fontSize: 16)))
                 ],
               ),
             ),

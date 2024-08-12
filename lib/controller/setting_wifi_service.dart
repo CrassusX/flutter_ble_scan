@@ -6,6 +6,7 @@ import 'package:flutter_ble_scan/common/util.dart';
 import 'package:flutter_ble_scan/dio/dio.dart';
 import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:flutter_ble_scan/lib/Websocket.dart';
+import 'package:flutter_ble_scan/page/wifi/seat_wifi_step2.dart';
 import 'package:get/get.dart';
 import 'package:flutter_ble_scan/lib/ble.dart' as ble;
 import 'package:get_storage/get_storage.dart';
@@ -38,8 +39,8 @@ class GetSettingWifiService extends GetxService {
     });
 
     everAll([deviceInfoRx, mBleList], (callback) {
-      print("deviceInfoRx $callback");
       if (deviceInfoRx.value?.data?.macAddress != null &&
+          mBleList.isNotEmpty &&
           isConnected == false) {
         // 查找的mac 地址连接
         var macAddrss = deviceInfoRx.value?.data?.getMacAddrss;
@@ -72,7 +73,6 @@ class GetSettingWifiService extends GetxService {
     //
     _startScanBle();
     var code = await Get.toNamed('/qrScan');
-    print("code $code");
     if (isSuccessfulScan(code)) {
       var resp = await ApiService.getDeviceInfo(code!);
       if (resp != null) {
@@ -141,7 +141,10 @@ class GetSettingWifiService extends GetxService {
           });
 
           isConnected = true;
-          Get.toNamed("/seatWifiStep2");
+          print("xxxx ${deviceProp.id}");
+          Get.to(() => SeatWifiStep2(
+                deviceId: deviceInfoRx.value?.data?.deviceNo,
+              ));
         },
         'fail': (e) {
           hideLoading();
