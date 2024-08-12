@@ -24,6 +24,9 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
 
   @override
   Widget build(BuildContext context) {
+    var scanAsset = _hasChecked
+        ? 'images/qr_scan_enable.png'
+        : 'images/qr_scan_disable.png';
     return Scaffold(
       body: //通过ConstrainedBox来确保Stack占满屏幕
           ConstrainedBox(
@@ -33,9 +36,10 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               InkWell(
-                onTap: _hasChecked ? GetSettingWifiService.to.onGoScanWifi : null,
+                onTap:
+                    _hasChecked ? GetSettingWifiService.to.onGoScanWifi : null,
                 child: Image.asset(
-                  'images/success.png', // 图片路径
+                  scanAsset, // 图片路径
                   height: 100, // 设置图片高度
                 ),
               ), // 图片
