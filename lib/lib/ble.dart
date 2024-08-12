@@ -20,8 +20,7 @@ int closeTime = 20000;
 
 Map devices = {};
 
-Map<String, ConnectedDeviceProp> connectList =
-    <String, ConnectedDeviceProp>{};
+Map<String, ConnectedDeviceProp> connectList = <String, ConnectedDeviceProp>{};
 
 start(Function fun) {
   findCall = fun;
@@ -330,7 +329,7 @@ class ConnectedDeviceProp {
   Timer? heartbeatTimer;
   int _seq = 0;
   dynamic connectDevice;
-  late BluetoothCharacteristic writeCharacteristic;
+  BluetoothCharacteristic? writeCharacteristic;
   StreamSubscription<BluetoothDeviceState>? listenState;
   StreamSubscription<List<int>>? lisetenReceive;
   Map fun;
@@ -371,7 +370,7 @@ class ConnectedDeviceProp {
 
   closeHeartBeat() {
     if (heartbeatTimer != null) {
-      heartbeatTimer!.cancel();
+      heartbeatTimer?.cancel();
       heartbeatTimer = null;
     }
   }
@@ -417,7 +416,7 @@ class ConnectedDeviceProp {
       } catch (e) {
         print("write logprint error $e");
       }
-      writeCharacteristic.write(d, withoutResponse: true).then((e) {
+      writeCharacteristic?.write(d, withoutResponse: true).then((e) {
         // print("write success $e");
         if (exec > 95) {
           sendExecAverage = sendExecAverage + 0.5;
