@@ -97,6 +97,8 @@ class GetSettingWifiService extends GetxService {
         "device": device,
         'success': (ble.ConnectedDeviceProp deviceProp) {
           hideLoading();
+          // 当前连接的设备
+          currentConnectedDeviceProp = deviceProp;
           deviceProp.write3OfString("blog enable");
           deviceProp.write3OfString("blog rlmax=128");
           Timer(const Duration(microseconds: 300), () {
@@ -240,6 +242,7 @@ class GetSettingWifiService extends GetxService {
   List wifiList = [];
   // 获取WiFi列表
   getWifiList() {
+    if (currentConnectedDeviceProp == null) return;
     LoadingDialog.show("扫描WIFI列表中");
     String log = "";
     logAdd(l) {
@@ -292,7 +295,7 @@ class GetSettingWifiService extends GetxService {
     }
     currentConnectedDeviceProp?.receiveLogArr.add(logFun);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
-      // 等待一段时间 
+      // 等待一段时间
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
         if (timer.tick > 7) {

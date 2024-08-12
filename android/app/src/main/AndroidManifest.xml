@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <application
         android:label="flutter_ble_scan"
+        android:enableOnBackInvokedCallback="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
