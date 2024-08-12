@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:flutter_ble_scan/dio/dio.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:flutter_ble_scan/lib/Websocket.dart';
 import 'package:get/get.dart';
 import 'package:flutter_ble_scan/lib/ble.dart' as ble;
@@ -34,6 +36,21 @@ class GetSettingWifiService extends GetxService {
         });
       }
     });
+
+    everAll([deviceInfoRx, mBleList], (callback) {
+      print("deviceInfoRx $callback");
+      if (deviceInfoRx.value?.data?.macAddress != null &&
+          isConnected == false) {
+        // 查找的mac 地址连接
+        var macAddrss = deviceInfoRx.value?.data?.getMacAddrss;
+        var device = mBleList.value
+            .firstWhereOrNull((element) => element?['id'] == macAddrss);
+        print("bledevic $device ");
+        if (device != null) {
+          _connectBle(device['device']);
+        }
+      }
+    });
     super.onInit();
   }
 
@@ -47,28 +64,22 @@ class GetSettingWifiService extends GetxService {
     super.onClose();
   }
 
+  final deviceInfoRx = Rx<DeviceInfo?>(null);
+
   // 第一步，去扫描页面
   void onGoScanWifi() async {
+    //
     _startScanBle();
-    // var code = await Get.toNamed('/qrScan');
-    // print("code $code");
-    // if (isSuccessfulScan(code)) {
-    //   // var resp = await ApiService.getDeviceInfo(code!);
-    //   // if (resp != null) {
-    //   //   var deviceInfo = DeviceInfo.fromJson(resp);
-    //   //   if (deviceInfo.data?.macAddress != null) {
-    //   //     // 查找的mac 地址连接
-    //   //     var macAddrss = deviceInfo.data?.getMacAddrss;
-    //   //     var device = devices
-    //   //         .firstWhereOrNull((element) => element?['id'] == macAddrss);
-    //   //     if (device != null) {
-    //   //       toConnectToDevice(device['device']);
-    //   //     }
-    //   //   }
-    //   // }
-    // } else {
-    //   showToast("扫码失败，不符合格式的设备码!");
-    // }
+    var code = await Get.toNamed('/qrScan');
+    print("code $code");
+    if (isSuccessfulScan(code)) {
+      var resp = await ApiService.getDeviceInfo(code!);
+      if (resp != null) {
+        deviceInfoRx.value = DeviceInfo.fromJson(resp);
+      }
+    } else {
+      showToast("扫码失败，不符合格式的设备码!");
+    }
   }
 
   // 开始蓝牙扫描
