@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'seat_wifi_step3.dart';
+
 // 二维码扫描成功
 class SeatWifiStep2 extends StatelessWidget {
- final  String? deviceId;
+  final String? deviceId;
   const SeatWifiStep2({super.key, this.deviceId});
-
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,9 @@ class SeatWifiStep2 extends StatelessWidget {
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll(Colors.grey.shade300)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => const SeatWifiStep3());
+                      },
                       child: const Text('确认无误，下一步',
                           style: TextStyle(
                               color: Color.fromARGB(255, 80, 179, 146),
