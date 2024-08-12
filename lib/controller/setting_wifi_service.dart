@@ -170,7 +170,7 @@ class GetSettingWifiService extends GetxService {
     Map<String, dynamic> d = jsonDecode(message);
     switch (d['code']) {
       case 3:
-        // onMessageCode3(d['data']);
+        _onMessageCode3(d['data']);
         break;
       case 4:
         currentConnectedDeviceProp?.write3OfString(d['data'], success: () {
@@ -245,6 +245,7 @@ class GetSettingWifiService extends GetxService {
     logAdd(l) {
       log += l;
     }
+
     currentConnectedDeviceProp?.receiveLogArr.add(logAdd);
     currentConnectedDeviceProp?.write3OfString("wscan scan", success: () {
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
@@ -290,8 +291,8 @@ class GetSettingWifiService extends GetxService {
       d += " -a -i .wifi.sta.auth=" + item['auth'];
     }
     currentConnectedDeviceProp?.receiveLogArr.add(logFun);
-    print(d);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
+      // 等待一段时间 
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
         if (timer.tick > 7) {
@@ -335,9 +336,18 @@ class GetSettingWifiService extends GetxService {
   }
 
   Timer? updateDeviceTimer;
-  RxMap updateDevice = {}.obs;
-  List<String> updateDeviceSendArr = [];
-  void onMessageCode3(var data, {bool local = false}) {
+
+  _closeUpdateTimer() {
+    if (updateDeviceTimer != null) {
+      updateDeviceTimer?.cancel();
+      updateDeviceTimer = null;
+    }
+  }
+
+  // 解码信号为3的数据
+  void _onMessageCode3(var data, {bool local = false}) {
+    Map updateDevice = {};
+    List<String> updateDeviceSendArr = [];
     RegExp regex = RegExp(r'startDeviceUpdate:[0-9]*');
     if (data is String && regex.hasMatch(data)) {
       updateDevice['sum'] = int.parse(data.split(':')[1]);
@@ -350,10 +360,7 @@ class GetSettingWifiService extends GetxService {
       updateDevice['sendSuccess'] = 0;
       updateDevice['sendLoading'] = 0;
       updateDeviceSendArr = [];
-      if (updateDeviceTimer != null) {
-        updateDeviceTimer?.cancel();
-        updateDeviceTimer = null;
-      }
+      _closeUpdateTimer();
       updateDevice['isUpdate'] = true;
       updateDeviceTimer =
           Timer.periodic(Duration(milliseconds: timeInter), (timer) {
@@ -396,8 +403,7 @@ class GetSettingWifiService extends GetxService {
             mWebsocket.sendWebSocketMessageCodeN(
                 5, updateDevice['sendSuccess']);
           }
-          updateDeviceTimer?.cancel();
-          updateDeviceTimer = null;
+          _closeUpdateTimer();
           updateDevice['isUpdate'] = false;
         }
         if (!local) {
@@ -417,7 +423,6 @@ class GetSettingWifiService extends GetxService {
     } else {
       arr = List<String>.from(json.decode(data));
     }
-    print("arr.length add ${arr.length}");
     updateDeviceSendArr.addAll(arr);
     if (arr[arr.length - 1] == "reboot" &&
         currentConnectedDeviceProp?.deviceType == 2) {

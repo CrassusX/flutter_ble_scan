@@ -327,9 +327,9 @@ void closeAll() {
 }
 
 class ConnectedDeviceProp {
-  Timer? heartbeatTimer = null;
+  Timer? heartbeatTimer;
   int _seq = 0;
-  var connectDevice;
+  dynamic connectDevice;
   late BluetoothCharacteristic writeCharacteristic;
   StreamSubscription<BluetoothDeviceState>? listenState;
   StreamSubscription<List<int>>? lisetenReceive;
@@ -337,7 +337,7 @@ class ConnectedDeviceProp {
   List receiveMethods = [];
   List logList = [];
   Function? logChange;
-  ConnectedDeviceProp({required this.connectDevice, required Map this.fun});
+  ConnectedDeviceProp({required this.connectDevice, required this.fun});
   List receiveLogArr = [];
   int deviceType = 2;
   int encodeType = 2;
@@ -399,7 +399,7 @@ class ConnectedDeviceProp {
 
   void writeBle(ByteData d, {Function? success, Function? fail}) {
     Uint8List d_ = Uint8List.view(d.buffer);
-    if (sendArr.length == 0) {
+    if (sendArr.isEmpty) {
       write(d_, success, fail);
     }
     sendArr.insert(0, {"d": d_, "success": success, "fail": fail});
@@ -425,7 +425,7 @@ class ConnectedDeviceProp {
         if (sendExecAverage > 99) {
           sendExecAverage = 99;
         }
-        if (sendArr.length > 0) {
+        if (sendArr.isNotEmpty) {
           sendArr.removeLast();
           Map last = sendArr.last;
           write(last["d"], last["success"], last["fail"]);
@@ -495,9 +495,9 @@ class ConnectedDeviceProp {
       bool isOk = sumCheck(value);
       if (isOk) {
         // print("NotifyValue $value");
-        receiveMethods.forEach((m) {
+        for (var m in receiveMethods) {
           m?.call();
-        });
+        }
         yewuSwitch(value[3], value.sublist(4));
       }
     });

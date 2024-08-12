@@ -408,9 +408,9 @@ class _indexState extends State<index> {
           deviceProp.write3OfString("blog rlmax=128");
           Timer(const Duration(microseconds: 300), () {
             String log = "";
-            Function logAdd = (l) {
+            logAdd(l) {
               log += l;
-            };
+            }
             deviceProp.receiveLogArr.add(logAdd);
             deviceProp.encodeType = 1;
             deviceProp.deviceType = 1;
