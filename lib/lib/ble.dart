@@ -278,7 +278,7 @@ void setOther(device, connectedDeviceProp, fun) async {
 }
 
 // 连接设备
-void connectToDevice(fun) async {
+void connectToDevice(Map fun) async {
   BluetoothDevice device = fun['device'];
   ConnectedDeviceProp? connectedDeviceProp =
       getOneConnectedDeviceProp(device.id.toString());
@@ -291,7 +291,7 @@ void connectToDevice(fun) async {
   }
   try {
     print("connecting");
-    Timer connectingTimeout = Timer(Duration(seconds: 9), () {
+    Timer connectingTimeout = Timer(const Duration(seconds: 9), () {
       fun['fail']?.call("蓝牙连接超时");
     });
     await device.connect(timeout: const Duration(seconds: 8));
@@ -305,7 +305,7 @@ void connectToDevice(fun) async {
   } catch (e) {
     print("连接失败 执行失败回调 错误： $e");
     if (connectedDeviceProp != null) {
-      disconnect(connectedDeviceProp!);
+      disconnect(connectedDeviceProp);
     }
     print("连接失败 执行失败回调");
     fun['fail']?.call(e);
@@ -599,9 +599,9 @@ class ConnectedDeviceProp {
           endLogTimer = null;
         }
 
-        if (endLogValue != null && endLogValue!.isNotEmpty) {
-          endLogTimer = Timer(Duration(milliseconds: 400), () {
-            String log = ab2StrByType(endLogValue!);
+        if (endLogValue != null && endLogValue.isNotEmpty) {
+          endLogTimer = Timer(const Duration(milliseconds: 400), () {
+            String log = ab2StrByType(endLogValue);
             endLogValue = [];
             addLog(log);
             try {
@@ -616,7 +616,7 @@ class ConnectedDeviceProp {
 
         if (logData != null && logData.isNotEmpty) {
           if (logData.length != 1 || logData[0] != 13) {
-            String log = ab2StrByType(logData!);
+            String log = ab2StrByType(logData);
             addLog(log);
             try {
               receiveLogArr.forEach((m) {
