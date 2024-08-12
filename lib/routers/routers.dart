@@ -12,9 +12,11 @@ var routes = {
   "/index": (contxt) => const index(),
   "/wifi": (context) => const Wifi(),
   "/qrScan": (context) => const QrcodeScanner(),
-  "/qrScanSuccess": (context) => const QRScanSuccess(),
-  "/settingWifi": (context) => const SettingWifi(),
+  "/qrScanSuccess": (context) => const SeatWifiStep2(),
+  "/settingWifi": (context) => const SeatWifiStep3(),
   "/seatWifiStep1": (context) => const SeatWifiStep1(),
+  "/seatWifiStep2": (context) => const SeatWifiStep2(),
+  "/seatWifiStep3": (context) => const SeatWifiStep3(),
 
 };
 

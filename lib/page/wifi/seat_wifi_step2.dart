@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 // 二维码扫描成功
-class QRScanSuccess extends StatelessWidget {
+class SeatWifiStep2 extends StatelessWidget {
   final Map? data;
-  const QRScanSuccess({super.key, this.data});
+  const SeatWifiStep2({super.key, this.data});
 
   @override
   Widget build(BuildContext context) {

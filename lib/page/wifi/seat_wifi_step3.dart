@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'seat_wifi_step3_child.dart';
 
 // 二维码扫描成功
-class SettingWifi extends StatelessWidget {
+class SeatWifiStep3 extends StatelessWidget {
   final Map? data;
-  const SettingWifi({super.key, this.data});
+  const SeatWifiStep3({super.key, this.data});
 
   @override
   Widget build(BuildContext context) {

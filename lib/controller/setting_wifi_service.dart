@@ -61,6 +61,7 @@ class GetSettingWifiService extends GetxService {
 
   @override
   void onClose() {
+    _disconnectBle();
     super.onClose();
   }
 
@@ -84,10 +85,9 @@ class GetSettingWifiService extends GetxService {
 
   // 开始蓝牙扫描
   _startScanBle() {
-    // ble.findInput = 'AITH';
+    ble.findInput = 'AITH';
     ble.start((List bleList) {
       if (bleList.isNotEmpty) {
-        print("bleList $bleList");
         mBleList.value = bleList;
       }
     });
@@ -141,6 +141,7 @@ class GetSettingWifiService extends GetxService {
           });
 
           isConnected = true;
+          Get.toNamed("/seatWifiStep2");
         },
         'fail': (e) {
           hideLoading();
