@@ -1,39 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/common/util.dart';
 
 class SeatWifiStep3Setting extends StatefulWidget {
-  const SeatWifiStep3Setting({super.key});
+  final Function()? onNext;
+  const SeatWifiStep3Setting({super.key, this.onNext});
 
   @override
   SeatWifiStep3SettingState createState() => SeatWifiStep3SettingState();
 }
 
 class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
-  double progress = 10; // 进度百分比，范围为0到1
+  bool _hasChecked = false;
+
+  _onChecked(bool? value) {
+    setState(() {
+      _hasChecked = value!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [Text("网络设置")],
           ),
-          SizedBox(height: 16),
-          TextField(
+          const SizedBox(height: 16),
+          const TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.wifi, color: Colors.black),
               suffixIcon: Icon(Icons.arrow_forward_ios),
               hintText: '请选择WIFI',
             ),
           ),
-          SizedBox(height: 16),
-          TextField(
+          const SizedBox(height: 16),
+          const TextField(
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock, color: Colors.black),
               hintText: '请输入密码',
             ),
+          ),
+          const SizedBox(height: 16),
+          Row(children: [
+            Checkbox(
+              value: _hasChecked,
+              onChanged: _onChecked,
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.selected)) {
+                  return normalColor;
+                }
+                return greyColor;
+              }),
+            ), // 复选
+            InkWell(
+                onTap: () => _onChecked(!_hasChecked),
+                child: const Text('允许记住密码')),
+          ]),
+          const SizedBox(height: 40), // 文字描述
+          Center(
+            child: FilledButton.tonal(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStatePropertyAll(Colors.grey.shade300)),
+                onPressed: widget.onNext,
+                child: const Text('下一步',
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 80, 179, 146),
+                        fontSize: 16))),
           )
         ],
       ),

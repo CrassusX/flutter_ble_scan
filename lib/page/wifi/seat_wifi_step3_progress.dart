@@ -3,14 +3,14 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
 
-class SettingWifiState extends StatefulWidget {
-  const SettingWifiState({super.key});
+class SeatWifiStep3Progress extends StatefulWidget {
+  const SeatWifiStep3Progress({super.key});
 
   @override
-  SettingWifiStateState createState() => SettingWifiStateState();
+  SeatWifiStep3ProgressState createState() => SeatWifiStep3ProgressState();
 }
 
-class SettingWifiStateState extends State<SettingWifiState> {
+class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
   double progress = 10; // 进度百分比，范围为0到1
 
   @override

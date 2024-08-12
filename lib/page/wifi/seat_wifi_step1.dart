@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
 import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
-import 'package:get/get.dart';
 
 // 二维码扫描成功
 class SeatWifiStep1 extends StatefulWidget {

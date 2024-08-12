@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'seat_wifi_step3_progress.dart';
 import 'seat_wifi_step3_setting.dart';
 
 // 二维码扫描成功
-class SeatWifiStep3 extends StatelessWidget {
+class SeatWifiStep3 extends StatefulWidget {
   final Map? data;
   const SeatWifiStep3({super.key, this.data});
+
+  @override
+  State<SeatWifiStep3> createState() => SeatWifiStep3State();
+}
+
+class SeatWifiStep3State extends State<SeatWifiStep3> {
+  bool _isSetting = true;
+
+  _onNextStep(){
+    setState(() {
+      _isSetting = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +35,9 @@ class SeatWifiStep3 extends StatelessWidget {
               'images/seat.png', // 图片路径
               height: 180, // 设置图片高度
             ),
-             const SeatWifiStep3Setting()
+           _isSetting? SeatWifiStep3Setting(
+              onNext: _onNextStep,
+            ): const SeatWifiStep3Progress()
           ],
         ),
       ),
