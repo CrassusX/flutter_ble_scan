@@ -159,63 +159,21 @@ Future showInputCustomDialog(BuildContext context,
   );
 }
 
-Future showCustomDialog(
-    BuildContext context, Widget child, Function onOkPress) async {
-  return showDialog(
-    context: context,
-    barrierDismissible: true,
+// 底部弹框显示
+showCustomBottomSheet(BuildContext ctx, Widget child, {double factor = 0.8}) {
+  showModalBottomSheet(
+    context: ctx,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16.0),
+        topRight: Radius.circular(16.0),
+      ),
+    ),
     builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Container(
-          width: Get.width * 0.8,
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              child,
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // 关闭提示框
-                      },
-                      style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all(
-                            Theme.of(context).primaryColor),
-                      ),
-                      child: const Text('取消'),
-                    ),
-                  ),
-                  const SizedBox(width: 30),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // 处理确定按钮点击事件
-                        //
-                        onOkPress.call();
-                        Navigator.of(context).pop();
-                      },
-                      style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).primaryColor),
-                      ),
-                      child: const Text('确定'),
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
+      return FractionallySizedBox(
+        heightFactor: factor,
+        child: child,
       );
     },
   );

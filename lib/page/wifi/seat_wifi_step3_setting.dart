@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
-import 'package:flutter_ble_scan/page/wifi/wifi_list.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SeatWifiStep3Setting extends StatefulWidget {
   final Function()? onNext;
@@ -22,7 +22,54 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
   }
 
   _onWifiTap() {
-    showCustomDialog(context, const WifiListDialog(), () {});
+    var wifiList = [
+      {"num": 1, "name": "wifi1"},
+    ];
+    Widget child = ListView.builder(
+      itemCount: wifiList.length,
+      itemBuilder: (BuildContext context, int index) {
+        var d = wifiList[index];
+        return InkWell(
+          onTap: () {
+            // widget.onSelectWifiName?.call(d);
+            print("xxx $d");
+          },
+          child: Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.black12, width: 1),
+              ),
+            ),
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      "images/wifi3.svg",
+                      width: 30,
+                      height: 30,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text("${d['num']}"),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text("${d['name']}"),
+                  ],
+                ),
+                Image.asset("images/right.png")
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    showCustomBottomSheet(context, child);
   }
 
   @override
@@ -46,7 +93,7 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
             ),
           ),
           const SizedBox(height: 16),
-           TextField(
+          TextField(
             controller: _mPwdController,
             decoration: const InputDecoration(
               prefixIcon: Icon(Icons.lock, color: Colors.black),
