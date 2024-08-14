@@ -98,6 +98,7 @@ Future showInputCustomDialog(BuildContext context,
                 child: TextField(
                   textAlignVertical: TextAlignVertical.center,
                   style: const TextStyle(fontSize: 13),
+                  enabled: false,
                   decoration: InputDecoration(
                     filled: true,
                     hintText: inputPlaceHolder,
@@ -122,9 +123,7 @@ Future showInputCustomDialog(BuildContext context,
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // textEditingController.dispose();
                         Navigator.of(context).pop("cancel"); // 关闭提示框
-                        // completer.completeError("用户 cancel");
                       },
                       style: ButtonStyle(
                         foregroundColor: MaterialStateProperty.all(
@@ -139,9 +138,7 @@ Future showInputCustomDialog(BuildContext context,
                       onPressed: () {
                         // 处理确定按钮点击事件
                         String value = textEditingController.text; // 关闭提示框
-                        Navigator.of(context).pop("$value");
-                        // textEditingController.dispose();
-                        // completer.complete(value);
+                        Navigator.of(context).pop(value);
                       },
                       style: ButtonStyle(
                         foregroundColor:
@@ -160,11 +157,72 @@ Future showInputCustomDialog(BuildContext context,
       );
     },
   );
-  // return completer.future;
+}
+
+Future showCustomDialog(
+    BuildContext context, Widget child, Function onOkPress) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Container(
+          width: Get.width * 0.8,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              child,
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // 关闭提示框
+                      },
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
+                      child: const Text('取消'),
+                    ),
+                  ),
+                  const SizedBox(width: 30),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // 处理确定按钮点击事件
+                        //
+                        onOkPress.call();
+                        Navigator.of(context).pop();
+                      },
+                      style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateProperty.all(Colors.white),
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
+                      child: const Text('确定'),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
 
 bool isSuccessfulScan(String? code) {
-  if (code == null ||  code.length < 2) {
+  if (code == null || code.length < 2) {
     return false; // 扫码失败，码长度不足
   }
 
@@ -182,7 +240,7 @@ bool isSuccessfulScan(String? code) {
 }
 
 Color get normalColor => colorFromHex('#77B9A8');
-Color get greyColor =>  Colors.grey.shade100;
+Color get greyColor => Colors.grey.shade100;
 
 Color colorFromHex(String hexColor) {
   hexColor = hexColor.replaceAll('#', '');

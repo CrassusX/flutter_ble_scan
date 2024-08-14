@@ -96,16 +96,12 @@ void find() {
     }
   }
   var result = list.where((item) => item['isClose'] == false).toList();
-  if (result == null) {
-    findCall([]);
-  } else {
-    // print(result);
-    result.sort((a, b) {
-      // print("${a['rssi']},${b['rssi']}");
-      return b['rssi'] - a['rssi'];
-    });
-    findCall(result);
-  }
+  // print(result);
+  result.sort((a, b) {
+    // print("${a['rssi']},${b['rssi']}");
+    return b['rssi'] - a['rssi'];
+  });
+  findCall(result);
 }
 
 String ab2str(List<int> buffer) {
@@ -403,16 +399,16 @@ class ConnectedDeviceProp {
 
   void write(Uint8List d, Function? success, Function? fail, {int exec = 100}) {
     if (writeCharacteristic != null) {
-      try {
-        if (d[3] == 8 * 16 + 3) {
-          print(
-              "blewrite s = $sendExecAverage d = ${utf8.decode(d.sublist(4))}");
-        } else {
-          print("ble last write d = ${d[3]}");
-        }
-      } catch (e) {
-        print("write logprint error $e");
-      }
+      // try {
+      //   if (d[3] == 8 * 16 + 3) {
+      //     print(
+      //         "blewrite s = $sendExecAverage d = ${utf8.decode(d.sublist(4))}");
+      //   } else {
+      //     print("ble last write d = ${d[3]}");
+      //   }
+      // } catch (e) {
+      //   print("write logprint error $e");
+      // }
       writeCharacteristic?.write(d, withoutResponse: true).then((e) {
         // print("write success $e");
         if (exec > 95) {
@@ -428,7 +424,7 @@ class ConnectedDeviceProp {
         }
         success?.call();
       }).catchError((e) {
-        print("exec = $exec , $e");
+        // print("exec = $exec , $e");
         if (exec < 0) {
           fail?.call();
         }
@@ -579,8 +575,6 @@ class ConnectedDeviceProp {
           //   endLogValue = abData.sublist(index);
           // }
         } else {
-          int index = abData.length;
-
           if (endLogValue.isNotEmpty) {
             logData = [...endLogValue, ...abData];
           } else {
@@ -591,19 +585,19 @@ class ConnectedDeviceProp {
         }
 
         if (endLogTimer != null) {
-          endLogTimer!.cancel();
+          endLogTimer?.cancel();
           endLogTimer = null;
         }
 
-        if (endLogValue != null && endLogValue.isNotEmpty) {
+        if (endLogValue.isNotEmpty) {
           endLogTimer = Timer(const Duration(milliseconds: 400), () {
             String log = ab2StrByType(endLogValue);
             endLogValue = [];
             addLog(log);
             try {
-              receiveLogArr.forEach((m) {
+              for (var m in receiveLogArr) {
                 m(log);
-              });
+              }
             } catch (e) {
               print(e);
             }
@@ -615,9 +609,9 @@ class ConnectedDeviceProp {
             String log = ab2StrByType(logData);
             addLog(log);
             try {
-              receiveLogArr.forEach((m) {
+              for (var m in receiveLogArr) {
                 m(log);
-              });
+              }
             } catch (e) {
               print(e);
             }

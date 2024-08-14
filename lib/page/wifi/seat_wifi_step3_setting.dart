@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:flutter_ble_scan/page/wifi/wifi_list.dart';
 
 class SeatWifiStep3Setting extends StatefulWidget {
   final Function()? onNext;
@@ -11,11 +12,17 @@ class SeatWifiStep3Setting extends StatefulWidget {
 
 class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
   bool _hasChecked = false;
+  final TextEditingController _mWifiController = TextEditingController();
+  final TextEditingController _mPwdController = TextEditingController();
 
   _onChecked(bool? value) {
     setState(() {
       _hasChecked = value!;
     });
+  }
+
+  _onWifiTap() {
+    showCustomDialog(context, const WifiListDialog(), () {});
   }
 
   @override
@@ -29,16 +36,19 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
             children: [Text("网络设置")],
           ),
           const SizedBox(height: 16),
-          const TextField(
-            decoration: InputDecoration(
+          TextField(
+            onTap: _onWifiTap,
+            controller: _mWifiController,
+            decoration: const InputDecoration(
               prefixIcon: Icon(Icons.wifi, color: Colors.black),
               suffixIcon: Icon(Icons.arrow_forward_ios),
               hintText: '请选择WIFI',
             ),
           ),
           const SizedBox(height: 16),
-          const TextField(
-            decoration: InputDecoration(
+           TextField(
+            controller: _mPwdController,
+            decoration: const InputDecoration(
               prefixIcon: Icon(Icons.lock, color: Colors.black),
               hintText: '请输入密码',
             ),

@@ -13,7 +13,7 @@ class SeatWifiStep3 extends StatefulWidget {
 class SeatWifiStep3State extends State<SeatWifiStep3> {
   bool _isSetting = true;
 
-  _onNextStep(){
+  _onNextStep() {
     setState(() {
       _isSetting = false;
     });
@@ -26,18 +26,22 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
           Container(
         constraints: const BoxConstraints.expand(),
         padding: const EdgeInsets.only(top: 100),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              'images/seat.png', // 图片路径
-              height: 180, // 设置图片高度
-            ),
-           _isSetting? SeatWifiStep3Setting(
-              onNext: _onNextStep,
-            ): const SeatWifiStep3Progress()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'images/seat.png', // 图片路径
+                height: 180, // 设置图片高度
+              ),
+              _isSetting
+                  ? SeatWifiStep3Setting(
+                      onNext: _onNextStep,
+                    )
+                  : const SeatWifiStep3Progress()
+            ],
+          ),
         ),
       ),
     );
