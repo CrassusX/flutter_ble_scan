@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SeatWifiStep3Setting extends StatefulWidget {
@@ -21,10 +22,8 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
     });
   }
 
-  _onWifiTap() {
-    var wifiList = [
-      {"num": 1, "name": "wifi1"},
-    ];
+  _onWifiTap() async {
+    var wifiList = await GetSettingWifiService.to.getWifiList();
     Widget child = ListView.builder(
       itemCount: wifiList.length,
       itemBuilder: (BuildContext context, int index) {
@@ -69,7 +68,28 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
         );
       },
     );
-    showCustomBottomSheet(context, child);
+    showCustomBottomSheet(context, child, factor: 0.6);
+  }
+
+  Widget _switchSuffixIcon(context) {
+    return IconButton(
+      icon: const Icon(
+        Icons.arrow_forward_ios,
+        color: Colors.black,
+      ),
+      onPressed: () async {
+        // WifiInfo? wifiInfo = await controller.onSwitchNearWifi(context);
+        // _updateWifi(wifiInfo);
+      },
+    );
+  }
+
+  String? validateName(value, tip) {
+    if (value == null || value.isEmpty) {
+      return tip;
+    }
+
+    return null;
   }
 
   @override
@@ -83,19 +103,21 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
             children: [Text("网络设置")],
           ),
           const SizedBox(height: 16),
-          TextField(
+          TextFormField(
             onTap: _onWifiTap,
             controller: _mWifiController,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.wifi, color: Colors.black),
-              suffixIcon: Icon(Icons.arrow_forward_ios),
+            validator: (value) => validateName(value, 'Wi-Fi名称不能为空'),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.wifi, color: Colors.black),
+              suffixIcon: _switchSuffixIcon(context),
               hintText: '请选择WIFI',
             ),
           ),
           const SizedBox(height: 16),
-          TextField(
+          TextFormField(
             controller: _mPwdController,
             decoration: const InputDecoration(
+              labelText: 'Wi-Fi密码',
               prefixIcon: Icon(Icons.lock, color: Colors.black),
               hintText: '请输入密码',
             ),

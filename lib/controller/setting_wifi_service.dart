@@ -70,7 +70,8 @@ class GetSettingWifiService extends GetxService {
 
   // 第一步，去扫描页面
   void onGoScanWifi() async {
-    //
+    // 先断开现有的蓝牙连接
+    ble.closeAll();
     _startScanBle();
     var code = await Get.toNamed('/qrScan');
     if (isSuccessfulScan(code)) {
@@ -254,11 +255,10 @@ class GetSettingWifiService extends GetxService {
     }
   }
 
-  List wifiList = [];
   // 获取WiFi列表
-  getWifiList() {
-    if (currentConnectedDeviceProp == null) return;
+  Future<List> getWifiList() {
     LoadingDialog.show("扫描WIFI列表中");
+    Completer<List> completer = Completer<List>();
     String log = "";
     logAdd(l) {
       log += l;
@@ -270,7 +270,6 @@ class GetSettingWifiService extends GetxService {
         if (timer.tick > 6) {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
-          LoadingDialog.hide();
         }
         Iterable<RegExpMatch> a =
             RegExp(r'ITEM:SSID=([^\t]*)\s*RSSI=(\S*)\s*(,\s*auth\s*=\s*(\S*))?')
@@ -280,17 +279,19 @@ class GetSettingWifiService extends GetxService {
           for (RegExpMatch one in a) {
             arr.add({"name": one[1], "num": one[2], "auth": one[4]});
           }
-          LoadingDialog.hide();
 
-          wifiList = arr;
           currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
           timer.cancel();
+          LoadingDialog.hide();
+          completer.complete(arr);
         }
       });
     }, fail: () {
-      currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
       LoadingDialog.hide();
+      currentConnectedDeviceProp?.receiveLogArr.remove(logAdd);
+      completer.complete([]);
     });
+    return completer.future;
   }
 
   // 点击WiFi连接
