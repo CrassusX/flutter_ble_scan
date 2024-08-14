@@ -12,13 +12,20 @@ class SeatWifiStep3Setting extends StatefulWidget {
 }
 
 class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
-  bool _hasChecked = false;
+  bool _isRemember = false;
   final TextEditingController _mWifiController = TextEditingController();
   final TextEditingController _mPwdController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _isRemember = GetSettingWifiService.to.mWifiParams.isRemember ?? false;
+    _mWifiController.text = GetSettingWifiService.to.mWifiParams.wifi?['name'];
+    _mPwdController.text = GetSettingWifiService.to.mWifiParams.password ?? '';
+  }
 
   _onChecked(bool? value) {
     setState(() {
-      _hasChecked = value!;
+      _isRemember = value!;
     });
   }
 
@@ -30,8 +37,10 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
         var d = wifiList[index];
         return InkWell(
           onTap: () {
-            // widget.onSelectWifiName?.call(d);
-            print("xxx $d");
+            // {name: Crassus, num: -63, auth: 4}
+            _mWifiController.text = d['name'];
+            GetSettingWifiService.to.mWifiParams.wifi = d;
+            Navigator.of(context).pop();
           },
           child: Container(
             margin: const EdgeInsets.only(left: 20, right: 20),
@@ -125,7 +134,7 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
           const SizedBox(height: 16),
           Row(children: [
             Checkbox(
-              value: _hasChecked,
+              value: _isRemember,
               onChanged: _onChecked,
               fillColor: MaterialStateProperty.resolveWith((states) {
                 if (states.contains(MaterialState.selected)) {
@@ -135,7 +144,7 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
               }),
             ), // 复选
             InkWell(
-                onTap: () => _onChecked(!_hasChecked),
+                onTap: () => _onChecked(!_isRemember),
                 child: const Text('允许记住密码')),
           ]),
           const SizedBox(height: 40), // 文字描述
@@ -144,7 +153,11 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
                 style: ButtonStyle(
                     backgroundColor:
                         MaterialStatePropertyAll(Colors.grey.shade300)),
-                onPressed: widget.onNext,
+                onPressed: () {
+                  GetSettingWifiService.to.mWifiParams.password = _mPwdController.text;
+                  GetSettingWifiService.to.mWifiParams.isRemember = _isRemember;
+                  widget.onNext?.call();
+                } ,
                 child: const Text('下一步',
                     style: TextStyle(
                         color: Color.fromARGB(255, 80, 179, 146),

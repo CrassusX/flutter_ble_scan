@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
 import 'seat_wifi_step3_progress.dart';
 import 'seat_wifi_step3_setting.dart';
 
@@ -14,6 +15,7 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
   bool _isSetting = true;
 
   _onNextStep() {
+    GetSettingWifiService.to.onConnectWifi();
     setState(() {
       _isSetting = false;
     });

@@ -21,6 +21,8 @@ class GetSettingWifiService extends GetxService {
 
   final WebsocketProp mWebsocket = WebsocketProp();
 
+  final WifiInfoParams mWifiParams = WifiInfoParams();
+
   ble.ConnectedDeviceProp? currentConnectedDeviceProp;
 
   @override
@@ -295,7 +297,9 @@ class GetSettingWifiService extends GetxService {
   }
 
   // 点击WiFi连接
-  _connectWifi(String v, Map item) {
+  onConnectWifi() {
+    Map item = mWifiParams.wifi!;
+    String v = mWifiParams.password ?? '';
     LoadingDialog.show("WIFI连接中");
     String log = "";
     logFun(l) {

@@ -62,3 +62,11 @@ class Data {
     }
   }
 }
+
+class WifiInfoParams {
+  Map? wifi;
+  String? password;
+  bool? isRemember;
+
+  WifiInfoParams({this.wifi, this.password, this.isRemember = true});
+}

@@ -25,11 +25,11 @@ class FitTool {
 
 extension FitInt on int {
   double get px {
-    return FitTool.getPx(this.toDouble());
+    return FitTool.getPx(toDouble());
   }
 
   double get rpx {
-    return FitTool.getRpx(this.toDouble());
+    return FitTool.getRpx(toDouble());
   }
 }
 
