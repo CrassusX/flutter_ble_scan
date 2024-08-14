@@ -297,7 +297,7 @@ class GetSettingWifiService extends GetxService {
   }
 
   // 点击WiFi连接
-  onConnectWifi() {
+  onConnectWifi(Function(bool) callback) {
     Map item = mWifiParams.wifi!;
     String v = mWifiParams.password ?? '';
     LoadingDialog.show("WIFI连接中");
@@ -306,13 +306,13 @@ class GetSettingWifiService extends GetxService {
       log += l;
     }
 
-    String d =
-        // ignore: prefer_interpolation_to_compose_strings
-        "${'${'vtouch save update .wifi.sta.ssid="' + item['name']}" .wifi.sta.pwd="' + v}\"";
+    String d = "${'${'vtouch save update .wifi.sta.ssid="' +
+        item['name']}" .wifi.sta.pwd="' +
+        v}\"";
     if (item['auth'] != null) {
-      // ignore: prefer_interpolation_to_compose_strings
       d += " -a -i .wifi.sta.auth=" + item['auth'];
     }
+    print('d $d');
     currentConnectedDeviceProp?.receiveLogArr.add(logFun);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
       // 等待一段时间
@@ -323,6 +323,7 @@ class GetSettingWifiService extends GetxService {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接失败");
+          callback.call(false);
         }
         RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
         if (m != null && m[1] != null && m[1] == 'connect') {
@@ -330,7 +331,7 @@ class GetSettingWifiService extends GetxService {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接成功");
-          Get.back();
+          callback.call(true);
         }
         log = "";
       });

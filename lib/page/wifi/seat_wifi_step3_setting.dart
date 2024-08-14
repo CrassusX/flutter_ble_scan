@@ -18,9 +18,9 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
   @override
   void initState() {
     super.initState();
-    _isRemember = GetSettingWifiService.to.mWifiParams.isRemember ?? false;
-    _mWifiController.text = GetSettingWifiService.to.mWifiParams.wifi?['name'];
-    _mPwdController.text = GetSettingWifiService.to.mWifiParams.password ?? '';
+    // _isRemember = GetSettingWifiService.to.mWifiParams.isRemember ?? false;
+    // _mWifiController.text = GetSettingWifiService.to.mWifiParams.wifi?['name'];
+    // _mPwdController.text = GetSettingWifiService.to.mWifiParams.password ?? '';
   }
 
   _onChecked(bool? value) {

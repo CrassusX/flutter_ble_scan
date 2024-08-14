@@ -13,9 +13,14 @@ class SeatWifiStep3 extends StatefulWidget {
 
 class SeatWifiStep3State extends State<SeatWifiStep3> {
   bool _isSetting = true;
+  double _progress = 0;
 
   _onNextStep() {
-    GetSettingWifiService.to.onConnectWifi();
+    GetSettingWifiService.to.onConnectWifi((bool success) {
+      if (success) {
+        _progress = 100;
+      }
+    });
     setState(() {
       _isSetting = false;
     });
@@ -41,7 +46,9 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
                   ? SeatWifiStep3Setting(
                       onNext: _onNextStep,
                     )
-                  : const SeatWifiStep3Progress()
+                  : SeatWifiStep3Progress(
+                      progress: _progress,
+                    )
             ],
           ),
         ),

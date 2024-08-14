@@ -4,14 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
 
 class SeatWifiStep3Progress extends StatefulWidget {
-  const SeatWifiStep3Progress({super.key});
+  final double progress;
+  const SeatWifiStep3Progress({super.key, this.progress = 0});
 
   @override
   SeatWifiStep3ProgressState createState() => SeatWifiStep3ProgressState();
 }
 
 class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
-  double progress = 10; // 进度百分比，范围为0到1
+  double progress = 0; // 进度百分比，范围为0到100
+
+  @override
+  void initState() {
+    progress = widget.progress;
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(SeatWifiStep3Progress oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.progress != widget.progress) {
+      setState(() {
+        progress = widget.progress;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
