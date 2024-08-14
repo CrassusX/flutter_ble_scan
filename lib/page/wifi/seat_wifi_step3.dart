@@ -4,8 +4,7 @@ import 'seat_wifi_step3_setting.dart';
 
 // 二维码扫描成功
 class SeatWifiStep3 extends StatefulWidget {
-  final Map? data;
-  const SeatWifiStep3({super.key, this.data});
+  const SeatWifiStep3({super.key});
 
   @override
   State<SeatWifiStep3> createState() => SeatWifiStep3State();

@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue, foregroundColor: Colors.white),
         ),
         onGenerateRoute: onGenerateRoute,
-        initialRoute: "/seatWifiStep1",
+        initialRoute: "/seatWifiStep3",
         // home: MyApp(),
       );
     }

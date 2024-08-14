@@ -200,7 +200,7 @@ void startBluetoothScanning() {
     allowDuplicates: true,
     scanMode: ScanMode.lowLatency,
   );
-  var timer = null;
+
   flutterBlue.scanResults.listen((List<ScanResult> results) {
     // print(results.length);
     for (ScanResult result in results) {
@@ -224,13 +224,10 @@ void startBluetoothScanning() {
       });
       devices[result.device.id] = d;
       // print('Device found: ${result.device.name}, ${result.device.id}');
-      if (timer == null) {
-        timer = 1;
-        timer = Future.delayed(const Duration(microseconds: 300), () {
-          timer = null;
-          find();
-        });
-      }
+
+      Future.delayed(const Duration(microseconds: 300), () {
+        find();
+      });
     }
   });
 }
