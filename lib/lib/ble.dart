@@ -189,6 +189,8 @@ void advertisDataFormatter(var a, item) {
   }
 }
 
+StreamSubscription? _subscription;
+
 void startBluetoothScanning() {
   // 开始扫描附近的蓝牙设备
   flutterBlue.startScan(
@@ -197,7 +199,7 @@ void startBluetoothScanning() {
     scanMode: ScanMode.lowLatency,
   );
 
-  flutterBlue.scanResults.listen((List<ScanResult> results) {
+  _subscription = flutterBlue.scanResults.listen((List<ScanResult> results) {
     // print(results.length);
     for (ScanResult result in results) {
       // if (result.device.id.toString().contains("A3:76")) {
@@ -312,14 +314,16 @@ void disconnect(ConnectedDeviceProp connectedDeviceProp) {
 
 void closeAll() {
   findCall = null;
-  if (connectList.values.isNotEmpty) {
-    for (ConnectedDeviceProp prop in connectList.values) {
+  _subscription?.cancel();
+  flutterBlue.stopScan();
+  // 创建connectList的副本
+  List<ConnectedDeviceProp> connectListCopy = List.from(connectList.values);
+  if (connectListCopy.isNotEmpty) {
+    for (ConnectedDeviceProp prop in connectListCopy) {
       disconnect(prop);
     }
-    connectList.clear();
+    connectList = {};
   }
-
-  flutterBlue.stopScan();
 }
 
 class ConnectedDeviceProp {

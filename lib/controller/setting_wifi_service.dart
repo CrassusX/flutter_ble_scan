@@ -132,7 +132,6 @@ class GetSettingWifiService extends GetxService {
     }
 
     isShowLoading = true;
-    LoadingDialog.show("连接中");
     ble.connectToDevice(
       {
         "device": device,
@@ -324,14 +323,15 @@ class GetSettingWifiService extends GetxService {
   }
 
   // 点击WiFi连接
-  onConnectWifi(Function(bool) callback) {
-    Map item = mWifiParams.wifi!;
-    String v = mWifiParams.password ?? '';
-    LoadingDialog.show("WIFI连接中");
+  onConnectWifi(Function(bool) callback, Function(double) callbackProgress) {
+    Map item = mWifiParams.wifi;
+    String v = mWifiParams.password;
     String log = "";
     logFun(l) {
       log += l;
     }
+
+    callbackProgress.call(10);
 
     String d =
         "${'${'vtouch save update .wifi.sta.ssid="' + item['name']}" .wifi.sta.pwd="' + v}\"";
@@ -341,23 +341,25 @@ class GetSettingWifiService extends GetxService {
     currentConnectedDeviceProp?.receiveLogArr.add(logFun);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
       // 等待一段时间
+      callbackProgress.call(20);
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
         print("time ${timer.tick}");
+        RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
         if (timer.tick > 7) {
-          LoadingDialog.hide();
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接失败");
+          callbackProgress.call(0);
           callback.call(false);
-        }
-        RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
-        if (m != null && m[1] != null && m[1] == 'connect') {
-          LoadingDialog.hide();
+        } else if (m != null && m[1] != null && m[1] == 'connect') {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接成功");
+          callbackProgress.call(100);
           callback.call(true);
+        } else {
+          callbackProgress.call(20 + (timer.tick / 7) * 80);
         }
         log = "";
       });
@@ -382,7 +384,7 @@ class GetSettingWifiService extends GetxService {
 
   void hideLoading() {
     isShowLoading = false;
-    LoadingDialog.hide();
+    // LoadingDialog.hide();
   }
 
   Timer? updateDeviceTimer;

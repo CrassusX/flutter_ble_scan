@@ -63,7 +63,7 @@ class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
             onCompleted: () {
               if (hasComplete) {
                 GetSettingWifiService.to.onCloseBleConnected();
-                Get.until((route) => Get.currentRoute == '/seatWifiStep1');
+                Get.offAllNamed('/seatWifiStep1');
               }
             },
           ),
@@ -140,12 +140,15 @@ class VerticalProgressTip extends StatelessWidget {
 
   bool get hasComplete => progress >= 100;
 
+  String get progressText =>
+      hasComplete ? "100%" : "${progress.toStringAsFixed(0)}%";
+
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text.rich(
         TextSpan(
-            text: "$progress",
+            text: progressText,
             style: TextStyle(
                 color: hasComplete
                     ? const Color.fromARGB(255, 80, 179, 146)

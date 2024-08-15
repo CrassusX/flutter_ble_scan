@@ -22,7 +22,16 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
         setState(() {
           _progress = 100;
         });
+      } else {
+        setState(() {
+          _isSetting = false;
+          _progress = 0;
+        });
       }
+    }, (double progress) {
+      setState(() {
+        _progress = progress;
+      });
     });
     setState(() {
       _isSetting = false;
