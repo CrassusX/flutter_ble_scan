@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
+import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
+import 'package:get/get.dart';
 
 class SeatWifiStep3Progress extends StatefulWidget {
   final double progress;
@@ -13,6 +15,8 @@ class SeatWifiStep3Progress extends StatefulWidget {
 
 class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
   double progress = 0; // 进度百分比，范围为0到100
+
+  bool get hasComplete => progress >= 100;
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
             Container(
               padding: const EdgeInsets.only(top: 10),
               child: VerticalPageControl(
-                hasComplete: progress >= 100,
+                hasComplete: hasComplete,
               ),
             ),
             Padding(
@@ -56,6 +60,12 @@ class SeatWifiStep3ProgressState extends State<SeatWifiStep3Progress> {
           height: 220,
           child: VerticalProgressTip(
             progress: progress,
+            onCompleted: () {
+              if (hasComplete) {
+                GetSettingWifiService.to.onCloseBleConnected();
+                Get.until((route) => Get.currentRoute == '/seatWifiStep1');
+              }
+            },
           ),
         )
       ],

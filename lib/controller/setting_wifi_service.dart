@@ -70,12 +70,16 @@ class GetSettingWifiService extends GetxService {
     super.onClose();
   }
 
+  onCloseBleConnected() {
+    ble.closeAll();
+  }
+
   final deviceInfoRx = Rx<DeviceInfo?>(null);
 
   // 第一步，去扫描页面
   void onGoScanWifi() async {
     // 先断开现有的蓝牙连接
-    ble.closeAll();
+    onCloseBleConnected();
     _startScanBle();
     var code = await Get.toNamed('/qrScan');
     if (isSuccessfulScan(code)) {
@@ -308,9 +312,8 @@ class GetSettingWifiService extends GetxService {
     //   log += l;
     // }
 
-    String d = "${'${'vtouch save update .wifi.sta.ssid="' +
-        item['name']}" .wifi.sta.pwd="' +
-        v}\"";
+    String d =
+        "${'${'vtouch save update .wifi.sta.ssid="' + item['name']}" .wifi.sta.pwd="' + v}\"";
     if (item['auth'] != null) {
       d += " -a -i .wifi.sta.auth=" + item['auth'];
     }

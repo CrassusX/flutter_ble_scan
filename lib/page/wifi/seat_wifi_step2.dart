@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/common/common_widget.dart';
 import 'package:get/get.dart';
 
 import 'seat_wifi_step3.dart';
@@ -10,73 +11,70 @@ class SeatWifiStep2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: //通过ConstrainedBox来确保Stack占满屏幕
-          ConstrainedBox(
-        constraints: const BoxConstraints.expand(),
-        child: Stack(
-          alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-          children: <Widget>[
-            Positioned(
-              top: -40,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'images/success.png', // 图片路径
-                    height: 100, // 设置图片高度
+    return WrapScaffold(
+      child: //通过ConstrainedBox来确保Stack占满屏幕
+          Stack(
+        alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
+        children: <Widget>[
+          Positioned(
+            top: -40,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'images/success.png', // 图片路径
+                  height: 100, // 设置图片高度
+                ),
+                const Text(
+                  '扫码完成',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
                   ),
-                  const Text(
-                    '扫码完成',
-                    style: TextStyle(
+                ),
+                SizedBox(
+                  height: Get.height * 0.1,
+                ),
+                Image.asset(
+                  'images/seat.png', // 图片路径
+                  height: 80, // 设置图片高度
+                ),
+                const Text(
+                  '健康评估垫', // 或 智能睡测仪
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  '设备号：$deviceId',
+                  style: const TextStyle(
                       fontSize: 20,
                       color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.1,
-                  ),
-                  Image.asset(
-                    'images/seat.png', // 图片路径
-                    height: 80, // 设置图片高度
-                  ),
-                  const Text(
-                    '健康评估垫', // 或 智能睡测仪
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Text(
-                    '设备号：$deviceId',
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  FilledButton.tonal(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.grey.shade300)),
-                      onPressed: () {
-                        Get.to(() => const SeatWifiStep3());
-                      },
-                      child: const Text('确认无误，下一步',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 80, 179, 146),
-                              fontSize: 16)))
-                ],
-              ),
+                      fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                FilledButton.tonal(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.grey.shade300)),
+                    onPressed: () {
+                      Get.to(() => const SeatWifiStep3());
+                    },
+                    child: const Text('确认无误，下一步',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 80, 179, 146),
+                            fontSize: 16)))
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
