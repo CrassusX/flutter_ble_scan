@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/util.dart';
 import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SeatWifiStep3Setting extends StatefulWidget {
@@ -13,14 +14,20 @@ class SeatWifiStep3Setting extends StatefulWidget {
 
 class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
   bool _isRemember = false;
-  final TextEditingController _mWifiController = TextEditingController();
-  final TextEditingController _mPwdController = TextEditingController();
+  late TextEditingController _mWifiController;
+  late TextEditingController _mPwdController;
   @override
   void initState() {
     super.initState();
-    // _isRemember = GetSettingWifiService.to.mWifiParams.isRemember ?? false;
-    // _mWifiController.text = GetSettingWifiService.to.mWifiParams.wifi?['name'];
-    // _mPwdController.text = GetSettingWifiService.to.mWifiParams.password ?? '';
+    WifiInfoParams mWifiParams = GetSettingWifiService.to.mWifiParams;
+    _isRemember = mWifiParams.isRemember;
+    _mPwdController = TextEditingController(text: mWifiParams.password);
+    String wifiName = '';
+    if (mWifiParams.wifi.containsKey("name")) {
+      wifiName = mWifiParams.wifi['name'];
+      _wifiInfo = mWifiParams.wifi;
+    }
+    _mWifiController = TextEditingController(text: wifiName);
   }
 
   _onChecked(bool? value) {
@@ -29,6 +36,7 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
     });
   }
 
+  Map? _wifiInfo;
   _onWifiTap() async {
     var wifiList = await GetSettingWifiService.to.getWifiList();
     Widget child = ListView.builder(
@@ -38,6 +46,7 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
         return InkWell(
           onTap: () {
             // {name: Crassus, num: -63, auth: 4}
+            _wifiInfo = d;
             _mWifiController.text = d['name'];
             GetSettingWifiService.to.mWifiParams.wifi = d;
             Navigator.of(context).pop();
@@ -154,10 +163,14 @@ class SeatWifiStep3SettingState extends State<SeatWifiStep3Setting> {
                     backgroundColor:
                         MaterialStatePropertyAll(Colors.grey.shade300)),
                 onPressed: () {
-                  GetSettingWifiService.to.mWifiParams.password = _mPwdController.text;
-                  GetSettingWifiService.to.mWifiParams.isRemember = _isRemember;
-                  widget.onNext?.call();
-                } ,
+                  if (_wifiInfo != null) {
+                    GetSettingWifiService.to.onSaveWifiInfo(
+                        _isRemember, _wifiInfo!, _mPwdController.text);
+                    widget.onNext?.call();
+                  } else {
+                    showToast("没有WiFi信息!");
+                  }
+                },
                 child: const Text('下一步',
                     style: TextStyle(
                         color: Color.fromARGB(255, 80, 179, 146),

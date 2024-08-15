@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_ble_scan/common/store_manger.dart';
 import 'package:flutter_ble_scan/common/util.dart';
 import 'package:flutter_ble_scan/dio/dio.dart';
 import 'package:flutter_ble_scan/event/device_info.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_ble_scan/lib/ble.dart' as ble;
 import 'package:get_storage/get_storage.dart';
 
 const String ip = "wxconfig.he-info.cn";
+const String bleWifiInfo = 'bleWifiInfo';
 
 class GetSettingWifiService extends GetxService {
   // 单利初始化
@@ -23,12 +25,14 @@ class GetSettingWifiService extends GetxService {
 
   final WebsocketProp mWebsocket = WebsocketProp();
 
-  final WifiInfoParams mWifiParams = WifiInfoParams();
+  WifiInfoParams mWifiParams = WifiInfoParams();
 
   ble.ConnectedDeviceProp? currentConnectedDeviceProp;
 
   @override
-  void onInit() {
+  void onInit() async {
+    await StoreManger.getInstance().init();
+    _readWifiInfo();
     getId().then((value) => mWebsocket.nickName = value ?? '');
 
     mWebsocket.initState("ws://$ip/ws/wx", {
@@ -72,6 +76,23 @@ class GetSettingWifiService extends GetxService {
 
   onCloseBleConnected() {
     ble.closeAll();
+  }
+
+  _readWifiInfo() {
+    String? decodeStr = StoreManger.getInstance().getString(bleWifiInfo);
+    mWifiParams = WifiInfoParams.decode(decodeStr);
+  }
+
+  onSaveWifiInfo(bool isRemember, Map wifiInfo, String password) {
+    mWifiParams = WifiInfoParams(
+      isRemember: isRemember,
+      wifi: wifiInfo,
+      password: password,
+    );
+    if (isRemember == true) {
+      final encodeStr = WifiInfoParams.encode(mWifiParams);
+      StoreManger.getInstance().setString(bleWifiInfo, encodeStr);
+    }
   }
 
   final deviceInfoRx = Rx<DeviceInfo?>(null);
@@ -308,24 +329,25 @@ class GetSettingWifiService extends GetxService {
     String v = mWifiParams.password ?? '';
     LoadingDialog.show("WIFI连接中");
     String log = "";
-    // logFun(l) {
-    //   log += l;
-    // }
+    logFun(l) {
+      log += l;
+    }
 
     String d =
         "${'${'vtouch save update .wifi.sta.ssid="' + item['name']}" .wifi.sta.pwd="' + v}\"";
     if (item['auth'] != null) {
       d += " -a -i .wifi.sta.auth=" + item['auth'];
     }
-    // currentConnectedDeviceProp?.receiveLogArr.add(logFun);
+    currentConnectedDeviceProp?.receiveLogArr.add(logFun);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
       // 等待一段时间
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
+        print("time ${timer.tick}");
         if (timer.tick > 7) {
           LoadingDialog.hide();
           timer.cancel();
-          // currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接失败");
           callback.call(false);
         }
@@ -333,7 +355,7 @@ class GetSettingWifiService extends GetxService {
         if (m != null && m[1] != null && m[1] == 'connect') {
           LoadingDialog.hide();
           timer.cancel();
-          // currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接成功");
           callback.call(true);
         }

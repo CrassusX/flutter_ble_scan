@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class DeviceInfo {
   final String? result;
   final Data? data;
@@ -64,9 +66,35 @@ class Data {
 }
 
 class WifiInfoParams {
-  Map? wifi;
-  String? password;
-  bool? isRemember;
+  Map wifi;
+  String password;
+  bool isRemember;
 
-  WifiInfoParams({this.wifi, this.password, this.isRemember = true});
+  WifiInfoParams({this.wifi = const {}, this.password = '', this.isRemember = true});
+
+  factory WifiInfoParams.fromJson(Map<String, dynamic> json) {
+    return WifiInfoParams(
+      wifi: json['wifi'],
+      password: json['password'],
+      isRemember: json['isRemember'],
+    );
+  }
+
+  Map<String, dynamic> get toGetMap {
+    return {
+      'wifi': wifi,
+      'password': password,
+      'isRemember': isRemember,
+    };
+  }
+
+  static String encode(WifiInfoParams item) => jsonEncode(item.toGetMap);
+
+  static WifiInfoParams decode(String? storeKey) {
+    if (storeKey == null) {
+      return WifiInfoParams();
+    }
+    final map = jsonDecode(storeKey);
+    return WifiInfoParams.fromJson(map);
+  }
 }

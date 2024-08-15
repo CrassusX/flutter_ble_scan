@@ -9,7 +9,7 @@ FlutterBlue flutterBlue = FlutterBlue.instance;
 
 String findInput = "";
 double rssichange = -70;
-Function findCall = () {};
+Function? findCall;
 
 int mcuMax = 500;
 
@@ -20,7 +20,7 @@ int closeTime = 20000;
 
 Map devices = {};
 
-Map<String, ConnectedDeviceProp> connectList = <String, ConnectedDeviceProp>{};
+Map<String, ConnectedDeviceProp> connectList = {};
 
 start(Function fun) {
   findCall = fun;
@@ -101,7 +101,7 @@ void find() {
     // print("${a['rssi']},${b['rssi']}");
     return b['rssi'] - a['rssi'];
   });
-  findCall(result);
+  findCall?.call(result);
 }
 
 String ab2str(List<int> buffer) {
@@ -311,10 +311,14 @@ void disconnect(ConnectedDeviceProp connectedDeviceProp) {
 }
 
 void closeAll() {
-  findCall = () {};
-  connectList.values.toList().forEach((element) {
-    disconnect(element);
-  });
+  findCall = null;
+  if (connectList.values.isNotEmpty) {
+    for (ConnectedDeviceProp prop in connectList.values) {
+      disconnect(prop);
+    }
+    connectList.clear();
+  }
+
   flutterBlue.stopScan();
 }
 
