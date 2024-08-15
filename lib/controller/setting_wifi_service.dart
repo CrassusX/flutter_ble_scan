@@ -323,6 +323,7 @@ class GetSettingWifiService extends GetxService {
   }
 
   // 点击WiFi连接
+  int maxRepeat = 10;
   onConnectWifi(Function(bool) callback, Function(double) callbackProgress) {
     Map item = mWifiParams.wifi;
     String v = mWifiParams.password;
@@ -342,25 +343,22 @@ class GetSettingWifiService extends GetxService {
     currentConnectedDeviceProp?.write3OfString(d, success: () {
       // 等待一段时间
       callbackProgress.call(20);
-      Timer.periodic(const Duration(milliseconds: 1500), (timer) {
+      Timer.periodic(const Duration(seconds: 2), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
         print("time ${timer.tick}");
         RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
-        if (timer.tick > 7) {
+        if (timer.tick > maxRepeat) {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
-          showToast("连接失败");
-          callbackProgress.call(0);
           callback.call(false);
-        } else if (m != null && m[1] != null && m[1] == 'connect') {
+        }
+        if (m != null && m[1] != null && m[1] == 'connect') {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
-          showToast("连接成功");
-          callbackProgress.call(100);
           callback.call(true);
-        } else {
-          callbackProgress.call(20 + (timer.tick / 7) * 80);
+          return;
         }
+        callbackProgress.call(20 + (timer.tick / maxRepeat) * 80);
         log = "";
       });
     });
