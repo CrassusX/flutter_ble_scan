@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -302,9 +304,9 @@ class GetSettingWifiService extends GetxService {
     String v = mWifiParams.password ?? '';
     LoadingDialog.show("WIFI连接中");
     String log = "";
-    logFun(l) {
-      log += l;
-    }
+    // logFun(l) {
+    //   log += l;
+    // }
 
     String d = "${'${'vtouch save update .wifi.sta.ssid="' +
         item['name']}" .wifi.sta.pwd="' +
@@ -312,8 +314,7 @@ class GetSettingWifiService extends GetxService {
     if (item['auth'] != null) {
       d += " -a -i .wifi.sta.auth=" + item['auth'];
     }
-    print('d $d');
-    currentConnectedDeviceProp?.receiveLogArr.add(logFun);
+    // currentConnectedDeviceProp?.receiveLogArr.add(logFun);
     currentConnectedDeviceProp?.write3OfString(d, success: () {
       // 等待一段时间
       Timer.periodic(const Duration(milliseconds: 1500), (timer) {
@@ -321,7 +322,7 @@ class GetSettingWifiService extends GetxService {
         if (timer.tick > 7) {
           LoadingDialog.hide();
           timer.cancel();
-          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          // currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接失败");
           callback.call(false);
         }
@@ -329,7 +330,7 @@ class GetSettingWifiService extends GetxService {
         if (m != null && m[1] != null && m[1] == 'connect') {
           LoadingDialog.hide();
           timer.cancel();
-          currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
+          // currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           showToast("连接成功");
           callback.call(true);
         }

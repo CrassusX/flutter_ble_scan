@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/common/common_widget.dart';
 import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
 import 'seat_wifi_step3_progress.dart';
 import 'seat_wifi_step3_setting.dart';
@@ -18,7 +19,9 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
   _onNextStep() {
     GetSettingWifiService.to.onConnectWifi((bool success) {
       if (success) {
-        _progress = 100;
+        setState(() {
+          _progress = 100;
+        });
       }
     });
     setState(() {
@@ -28,29 +31,25 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: //通过ConstrainedBox来确保Stack占满屏幕
-          Container(
-        constraints: const BoxConstraints.expand(),
-        padding: const EdgeInsets.only(top: 100),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(
-                'images/seat.png', // 图片路径
-                height: 180, // 设置图片高度
-              ),
-              _isSetting
-                  ? SeatWifiStep3Setting(
-                      onNext: _onNextStep,
-                    )
-                  : SeatWifiStep3Progress(
-                      progress: _progress,
-                    )
-            ],
-          ),
+    return WrapScaffold(
+      child: //通过ConstrainedBox来确保Stack占满屏幕
+          SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'images/seat.png', // 图片路径
+              height: 180, // 设置图片高度
+            ),
+            _isSetting
+                ? SeatWifiStep3Setting(
+                    onNext: _onNextStep,
+                  )
+                : SeatWifiStep3Progress(
+                    progress: _progress,
+                  )
+          ],
         ),
       ),
     );
