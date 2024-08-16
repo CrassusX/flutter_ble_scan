@@ -198,7 +198,7 @@ bool isSuccessfulScan(String? code) {
 }
 
 Color get normalColor => colorFromHex('#77B9A8');
-Color get greyColor => Colors.grey.shade100;
+Color get greyColor => Colors.grey.shade600;
 
 Color colorFromHex(String hexColor) {
   hexColor = hexColor.replaceAll('#', '');
