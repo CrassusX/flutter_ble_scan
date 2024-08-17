@@ -66,7 +66,7 @@ class GetSettingWifiService extends GetxService {
 
   @override
   void onClose() {
-    _disconnectBle();
+    onDisconnectBle();
     super.onClose();
   }
 
@@ -103,6 +103,7 @@ class GetSettingWifiService extends GetxService {
       var res = isSuccessfulScan(code);
       deviceType = res.$2;
       if (res.$1) {
+        LoadingDialog.show("连接蓝牙中...");
         var resp = await ApiService.getDeviceInfo(code!);
         if (resp != null) {
           deviceInfoRx.value = DeviceInfo.fromJson(resp);
@@ -173,6 +174,7 @@ class GetSettingWifiService extends GetxService {
           Get.to(() => SeatWifiStep2(
                 deviceId: deviceInfoRx.value?.data?.deviceNo,
               ));
+          ble.stopScan();
         },
         'fail': (e) {
           hideLoading();
@@ -180,7 +182,7 @@ class GetSettingWifiService extends GetxService {
         "stateChange": (state, device) {
           // print('stateChange Device ${device.name} $state');
           // if (state == BluetoothDeviceState.disconnected) {
-          _disconnectBle();
+          onDisconnectBle();
           // }
         }
       },
@@ -188,7 +190,7 @@ class GetSettingWifiService extends GetxService {
   }
 
   // 断开设备连接
-  _disconnectBle() {
+  onDisconnectBle() {
     if (currentConnectedDeviceProp != null) {
       ble.disconnect(currentConnectedDeviceProp!);
     }
@@ -229,7 +231,7 @@ class GetSettingWifiService extends GetxService {
             }
           }
         } else {
-          _disconnectBle();
+          onDisconnectBle();
         }
         break;
       case 7:
@@ -352,6 +354,8 @@ class GetSettingWifiService extends GetxService {
           timer.cancel();
           currentConnectedDeviceProp?.receiveLogArr.remove(logFun);
           callback.call(true);
+          // 断开socket链接
+          onDisconnectBle();
           return;
         }
         callbackProgress.call(20 + (timer.tick / maxRepeat) * 80);
@@ -376,7 +380,7 @@ class GetSettingWifiService extends GetxService {
 
   void hideLoading() {
     isShowLoading = false;
-    // LoadingDialog.hide();
+    LoadingDialog.hide();
   }
 
   Timer? updateDeviceTimer;
@@ -423,7 +427,7 @@ class GetSettingWifiService extends GetxService {
               currentConnectedDeviceProp?.write3OfString(v, success: () {
                 updateDevice['sendSuccess']++;
               }, fail: () {
-                _disconnectBle();
+                onDisconnectBle();
               });
             } else {
               currentConnectedDeviceProp?.write3OfString(v, success: () {
@@ -432,7 +436,7 @@ class GetSettingWifiService extends GetxService {
                       5, updateDevice['sendSuccess']);
                 }
               }, fail: () {
-                _disconnectBle();
+                onDisconnectBle();
               });
             }
           }

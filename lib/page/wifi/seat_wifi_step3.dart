@@ -20,23 +20,19 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
   _onNextStep() {
     GetSettingWifiService.to.onConnectWifi((bool success) {
       if (success) {
-        setState(() {
-          _progress = 100;
-        });
+        _progress = 100;
       } else {
-        setState(() {
-          _isSetting = false;
-          _progress = 0;
-        });
+        _isSetting = false;
+        _progress = 0;
       }
+
+      setState(() {});
     }, (double progress) {
-      setState(() {
-        _progress = progress;
-      });
+      _progress = progress;
+      setState(() {});
     });
-    setState(() {
-      _isSetting = false;
-    });
+    _isSetting = false;
+    setState(() {});
   }
 
   @override

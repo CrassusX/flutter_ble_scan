@@ -218,6 +218,13 @@ Future<void> startBluetoothScanning() async {
   );
 }
 
+// 停止扫描蓝牙
+stopScan() async {
+  _subscription?.cancel();
+  _subscription = null;
+  await flutterBlue.stopScan();
+}
+
 getOneConnectedDeviceProp(id) {
   return connectList[id];
 }
