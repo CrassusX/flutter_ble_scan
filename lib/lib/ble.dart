@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-FlutterBlue flutterBlue = FlutterBlue.instance;
+// FlutterBlue flutterBlue = FlutterBlue.instance;
 
 String findInput = "";
 double rssichange = -70;
@@ -193,7 +193,7 @@ StreamSubscription? _subscription;
 
 void startBluetoothScanning() {
   // 开始扫描附近的蓝牙设备
-  flutterBlue.startScan(
+  FlutterBluePlus.startScan(
     timeout: const Duration(days: 3),
     allowDuplicates: true,
     scanMode: ScanMode.lowLatency,
