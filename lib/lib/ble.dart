@@ -52,11 +52,9 @@ void requestBluetoothPermission() async {
     if ((result1 == null || result1.isGranted) &&
         (result2 == null || result2.isGranted) &&
         (result3 == null || result3.isGranted)) {
-      print("Bluetooth permissions granted.");
       // 在这里可以开始使用蓝牙功能
       startBluetoothScanning();
     } else {
-      print('Bluetooth permissions denied.');
       // 处理权限被拒绝的情况
     }
   }
@@ -77,12 +75,6 @@ void find() {
               .toLowerCase()
               .replaceAll(RegExp("[:：]"), "")
               .contains(reg);
-      // if(d.adData && d.adData.deviceId) {
-      // 	a = a || d.adData.deviceId.toLowerCase().replace(/[:：]/g, "").indexOf(reg) > -1
-      // }
-      // if(d.adData && d.adData.version && reg) {
-      // 	a = a || (d.adData.version + "").indexOf(reg) > -1
-      // }
       flag = flag && a;
     }
     if (flag) {
@@ -96,9 +88,7 @@ void find() {
     }
   }
   var result = list.where((item) => item['isClose'] == false).toList();
-  // print(result);
   result.sort((a, b) {
-    // print("${a['rssi']},${b['rssi']}");
     return b['rssi'] - a['rssi'];
   });
   findCall?.call(result);
@@ -184,9 +174,7 @@ void advertisDataFormatter(var a, item) {
 
       item['adData'] = obj;
     }
-  } catch (e) {
-    print(e);
-  }
+  } catch (e) {}
 }
 
 StreamSubscription? _subscription;
@@ -237,14 +225,12 @@ getOneConnectedDeviceProp(id) {
 void setOther(device, connectedDeviceProp, fun) async {
   try {
     List<BluetoothService> services = await device.discoverServices();
-    print(services);
     for (var service in services) {
       if (service.uuid.toString().toUpperCase() == myuuid) {
         // print("serviece $service");
         for (BluetoothCharacteristic element in service.characteristics) {
           if (element.properties.notify) {
             await element.setNotifyValue(true);
-            print("setNotifyValue 完成");
             connectedDeviceProp.createLisetenReceive(element);
             continue;
           }
@@ -254,19 +240,14 @@ void setOther(device, connectedDeviceProp, fun) async {
         }
       }
     }
-    ;
-    print("service 注册完成");
     connectList[connectedDeviceProp.id] = connectedDeviceProp;
     connectedDeviceProp.createListenState();
     connectedDeviceProp.heartbeat();
-    print("回调成功");
     fun['success']?.call(connectedDeviceProp);
   } catch (e) {
-    print("连接失败 执行失败回调 错误： $e");
     if (connectedDeviceProp != null) {
       disconnect(connectedDeviceProp!);
     }
-    print("连接失败 执行失败回调");
     fun['fail']?.call(e);
   }
 }
@@ -284,24 +265,20 @@ void connectToDevice(Map fun) async {
     return;
   }
   try {
-    print("connecting");
     Timer connectingTimeout = Timer(const Duration(seconds: 9), () {
       fun['fail']?.call("蓝牙连接超时");
     });
     await device.connect(timeout: const Duration(seconds: 8));
     connectingTimeout.cancel();
-    print("蓝牙连接完成");
     connectedDeviceProp = ConnectedDeviceProp(connectDevice: device, fun: fun);
     await device.requestMtu(mcuMax);
     Timer(const Duration(milliseconds: 1000), () {
       setOther(device, connectedDeviceProp, fun);
     });
   } catch (e) {
-    print("连接失败 执行失败回调 错误： $e");
     if (connectedDeviceProp != null) {
       disconnect(connectedDeviceProp);
     }
-    print("连接失败 执行失败回调");
     fun['fail']?.call(e);
   }
 }
@@ -477,9 +454,7 @@ class ConnectedDeviceProp {
 
   createListenState() {
     listenState = connectDevice.state.listen((state) {
-      print('ble Device state $id $state');
       if (state == BluetoothDeviceState.disconnected) {
-        print('ble Device state $id disconnected');
         fun['stateChange']?.call(state, connectDevice);
         isClose = true;
         disconnect(this);
@@ -524,12 +499,10 @@ class ConnectedDeviceProp {
     ByteData dv = ByteData.sublistView(Uint8List.fromList(ab));
 
     if (dv.getUint8(0) != ab.length) {
-      print("和校验失败:长度不对");
       return false;
     } //和校验失败
 
     if (sumList(ab) != dv.getUint8(1)) {
-      print("和校验失败: 校验失败");
       return false;
     }
 
@@ -556,7 +529,6 @@ class ConnectedDeviceProp {
     switch (yewu) {
       case 7:
         String error = ab2StrByType(abData);
-        print(error);
         break;
 
       case 131:
@@ -606,9 +578,7 @@ class ConnectedDeviceProp {
               for (var m in receiveLogArr) {
                 m(log);
               }
-            } catch (e) {
-              print(e);
-            }
+            } catch (e) {}
           });
         }
 
@@ -620,9 +590,7 @@ class ConnectedDeviceProp {
               for (var m in receiveLogArr) {
                 m(log);
               }
-            } catch (e) {
-              print(e);
-            }
+            } catch (e) {}
           }
         }
         // 处理逻辑

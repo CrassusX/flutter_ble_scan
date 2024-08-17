@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/common_widget.dart';
 import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'seat_wifi_step3_progress.dart';
 import 'seat_wifi_step3_setting.dart';
 
@@ -40,6 +41,7 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
 
   @override
   Widget build(BuildContext context) {
+    String? assetPath = GetSettingWifiService.to.deviceType.assetPath;
     return WrapScaffold(
       child: //通过ConstrainedBox来确保Stack占满屏幕
           SingleChildScrollView(
@@ -47,10 +49,11 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              'images/seat.png', // 图片路径
-              height: 180, // 设置图片高度
-            ),
+            if (assetPath != null)
+              Image.asset(
+                assetPath, // 图片路径
+                height: 180, // 设置图片高度
+              ),
             _isSetting
                 ? SeatWifiStep3Setting(
                     onNext: _onNextStep,

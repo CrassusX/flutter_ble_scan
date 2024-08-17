@@ -111,7 +111,7 @@ enum DeviceType {
 }
 
 extension DeviceTypeEx on DeviceType {
-  String get name {
+  String get atName {
     switch (this) {
       case DeviceType.seat:
         return '健康评估垫';

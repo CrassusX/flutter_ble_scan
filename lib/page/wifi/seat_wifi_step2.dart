@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_scan/common/common_widget.dart';
+import 'package:flutter_ble_scan/controller/setting_wifi_service.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:get/get.dart';
 
 import 'seat_wifi_step3.dart';
@@ -11,6 +13,7 @@ class SeatWifiStep2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? assetPath = GetSettingWifiService.to.deviceType.assetPath;
     return WrapScaffold(
       child: //通过ConstrainedBox来确保Stack占满屏幕
           Stack(
@@ -39,13 +42,14 @@ class SeatWifiStep2 extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.1,
                 ),
-                Image.asset(
-                  'images/seat.png', // 图片路径
-                  height: 80, // 设置图片高度
-                ),
-                const Text(
-                  '健康评估垫', // 或 智能睡测仪
-                  style: TextStyle(
+                if (assetPath != null)
+                  Image.asset(
+                    assetPath, // 图片路径
+                    height: 80, // 设置图片高度
+                  ),
+                Text(
+                  GetSettingWifiService.to.deviceType.atName, // 或 智能睡测仪
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
