@@ -56,7 +56,6 @@ class GetSettingWifiService extends GetxService {
         var macAddrss = deviceInfoRx.value?.data?.getMacAddrss;
         var device = mBleList.value
             .firstWhereOrNull((element) => element?['id'] == macAddrss);
-        print("bledevic $device ");
         if (device != null) {
           _connectBle(device['device']);
         }
@@ -71,8 +70,8 @@ class GetSettingWifiService extends GetxService {
     super.onClose();
   }
 
-  onCloseBleConnected() {
-    ble.closeAll();
+  Future<void> onCloseBleConnected() async {
+    await ble.closeAll();
   }
 
   _readWifiInfo() {
@@ -97,7 +96,7 @@ class GetSettingWifiService extends GetxService {
   // 第一步，去扫描页面
   void onGoScanWifi() async {
     // 先断开现有的蓝牙连接
-    onCloseBleConnected();
+    await onCloseBleConnected();
     _startScanBle();
     var code = await Get.toNamed('/qrScan');
     if (code != null) {
@@ -171,14 +170,12 @@ class GetSettingWifiService extends GetxService {
           });
 
           isConnected = true;
-          print("xxxx ${deviceProp.id}");
           Get.to(() => SeatWifiStep2(
                 deviceId: deviceInfoRx.value?.data?.deviceNo,
               ));
         },
         'fail': (e) {
           hideLoading();
-          print(e);
         },
         "stateChange": (state, device) {
           // print('stateChange Device ${device.name} $state');
@@ -274,7 +271,6 @@ class GetSettingWifiService extends GetxService {
         mWebsocket.sendWebSocketMessageCodeN(8, arr);
         break;
       case 100:
-        print("100 restart");
         // Assuming you have Flutter navigation logic here
         // For example:
         // Navigator.of(context).pushReplacementNamed('/Login');
@@ -346,7 +342,6 @@ class GetSettingWifiService extends GetxService {
       callbackProgress.call(20);
       Timer.periodic(const Duration(seconds: 2), (timer) {
         currentConnectedDeviceProp?.write3OfString("wl show name=vstrace");
-        print("time ${timer.tick}");
         RegExpMatch? m = RegExp(r"status=(\S*)\s*name=vstrace").firstMatch(log);
         if (timer.tick > maxRepeat) {
           timer.cancel();
@@ -374,9 +369,7 @@ class GetSettingWifiService extends GetxService {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       id_ =
           androidInfo.model + DateTime.now().millisecondsSinceEpoch.toString();
-      box.write("id", id_).catchError((e) {
-        print(e);
-      });
+      box.write("id", id_).catchError((e) {});
     }
     return id_;
   }
@@ -416,8 +409,6 @@ class GetSettingWifiService extends GetxService {
       updateDeviceTimer =
           Timer.periodic(Duration(milliseconds: timeInter), (timer) {
         int othersum = updateDeviceSendArr.length;
-        print(
-            "${updateDevice['sendLoading']} ${updateDevice['sendSuccess']} $othersum");
         if (updateDevice['sendLoading'] - updateDevice['sendSuccess'] <
                 maxSendSum &&
             othersum > 0) {

@@ -22,12 +22,12 @@ Map devices = {};
 
 Map<String, ConnectedDeviceProp> connectList = {};
 
-start(Function fun) {
+start(Function fun) async {
   findCall = fun;
   requestBluetoothPermission();
 }
 
-void requestBluetoothPermission() async {
+requestBluetoothPermission() async {
   // 请求蓝牙权限
   PermissionStatus status1 = await Permission.bluetooth.status;
   PermissionStatus status2 = await Permission.bluetoothScan.status;
@@ -179,14 +179,7 @@ void advertisDataFormatter(var a, item) {
 
 StreamSubscription? _subscription;
 
-void startBluetoothScanning() {
-  // 开始扫描附近的蓝牙设备
-  flutterBlue.startScan(
-    timeout: const Duration(days: 3),
-    allowDuplicates: true,
-    scanMode: ScanMode.lowLatency,
-  );
-
+Future<void> startBluetoothScanning() async {
   _subscription = flutterBlue.scanResults.listen((List<ScanResult> results) {
     // print(results.length);
     for (ScanResult result in results) {
@@ -216,6 +209,13 @@ void startBluetoothScanning() {
       });
     }
   });
+
+  // 开始扫描附近的蓝牙设备
+  await flutterBlue.startScan(
+    timeout: const Duration(days: 3),
+    allowDuplicates: true,
+    scanMode: ScanMode.lowLatency,
+  );
 }
 
 getOneConnectedDeviceProp(id) {
@@ -289,10 +289,10 @@ void disconnect(ConnectedDeviceProp connectedDeviceProp) {
   connectedDeviceProp.closeConnectedDeviceProp();
 }
 
-void closeAll() {
+Future<void> closeAll() async {
   findCall = null;
   _subscription?.cancel();
-  flutterBlue.stopScan();
+  await flutterBlue.stopScan();
   // 创建connectList的副本
   List<ConnectedDeviceProp> connectListCopy = List.from(connectList.values);
   if (connectListCopy.isNotEmpty) {
