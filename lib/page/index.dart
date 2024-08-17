@@ -587,21 +587,21 @@ class _indexState extends State<index> {
         builder: (context) => const QrcodeScanner(),
       ),
     );
-    if (isSuccessfulScan(code)) {
-      var resp = await ApiService.getDeviceInfo(code!);
-      if (resp != null) {
-        var deviceInfo = DeviceInfo.fromJson(resp);
-        if (deviceInfo.data?.macAddress != null) {
-          // 查找的mac 地址连接
-          var macAddrss = deviceInfo.data?.getMacAddrss;
-          var device = devices
-              .firstWhereOrNull((element) => element?['id'] == macAddrss);
-          if (device != null) {
-            toConnectToDevice(device['device']);
-          }
-        }
-      }
-    }
+    // if (isSuccessfulScan(code)) {
+    //   var resp = await ApiService.getDeviceInfo(code!);
+    //   if (resp != null) {
+    //     var deviceInfo = DeviceInfo.fromJson(resp);
+    //     if (deviceInfo.data?.macAddress != null) {
+    //       // 查找的mac 地址连接
+    //       var macAddrss = deviceInfo.data?.getMacAddrss;
+    //       var device = devices
+    //           .firstWhereOrNull((element) => element?['id'] == macAddrss);
+    //       if (device != null) {
+    //         toConnectToDevice(device['device']);
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   @override
