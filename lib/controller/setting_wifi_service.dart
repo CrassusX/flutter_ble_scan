@@ -27,6 +27,8 @@ class GetSettingWifiService extends GetxService {
 
   WifiInfoParams mWifiParams = WifiInfoParams();
 
+  DeviceType deviceType = DeviceType.unknown;
+
   ble.ConnectedDeviceProp? currentConnectedDeviceProp;
 
   @override
@@ -64,11 +66,6 @@ class GetSettingWifiService extends GetxService {
   }
 
   @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
   void onClose() {
     _disconnectBle();
     super.onClose();
@@ -103,13 +100,17 @@ class GetSettingWifiService extends GetxService {
     onCloseBleConnected();
     _startScanBle();
     var code = await Get.toNamed('/qrScan');
-    if (isSuccessfulScan(code)) {
-      var resp = await ApiService.getDeviceInfo(code!);
-      if (resp != null) {
-        deviceInfoRx.value = DeviceInfo.fromJson(resp);
+    if (code != null) {
+      var res = isSuccessfulScan(code);
+      deviceType = res.$2;
+      if (res.$1) {
+        var resp = await ApiService.getDeviceInfo(code!);
+        if (resp != null) {
+          deviceInfoRx.value = DeviceInfo.fromJson(resp);
+        }
+      } else {
+        showToast("扫码失败，不符合格式的设备码!");
       }
-    } else {
-      showToast("扫码失败，不符合格式的设备码!");
     }
   }
 

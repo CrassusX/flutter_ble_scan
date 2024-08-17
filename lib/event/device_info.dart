@@ -70,7 +70,8 @@ class WifiInfoParams {
   String password;
   bool isRemember;
 
-  WifiInfoParams({this.wifi = const {}, this.password = '', this.isRemember = true});
+  WifiInfoParams(
+      {this.wifi = const {}, this.password = '', this.isRemember = true});
 
   factory WifiInfoParams.fromJson(Map<String, dynamic> json) {
     return WifiInfoParams(
@@ -96,5 +97,66 @@ class WifiInfoParams {
     }
     final map = jsonDecode(storeKey);
     return WifiInfoParams.fromJson(map);
+  }
+}
+
+enum DeviceType {
+  unknown,
+  seat,
+  bed,
+  fatscale,
+  blood,
+  glucometer,
+  arteriosclerosis,
+}
+
+extension DeviceTypeEx on DeviceType {
+  String get name {
+    switch (this) {
+      case DeviceType.seat:
+        return '健康评估垫';
+      case DeviceType.bed:
+        return '智能睡测仪';
+      case DeviceType.fatscale:
+        return '体脂秤';
+      case DeviceType.blood:
+        return '血压计';
+      case DeviceType.glucometer:
+        return '血糖仪';
+      case DeviceType.arteriosclerosis:
+        return '动脉硬化仪';
+      default:
+        return '未知设备';
+    }
+  }
+
+  String? get assetPath {
+    switch (this) {
+      case DeviceType.seat:
+        return 'images/seat.png';
+      case DeviceType.bed:
+        return 'images/bed.png';
+      default:
+        return null;
+    }
+  }
+
+  static DeviceType fromName(String name) {
+    switch (name) {
+      case 'Z':
+        return DeviceType.seat;
+      case 'D':
+        return DeviceType.bed;
+      case 'T':
+        return DeviceType.fatscale;
+      case 'Y':
+        return DeviceType.blood;
+      case 'X':
+        return DeviceType.glucometer;
+      case 'M':
+        return DeviceType.arteriosclerosis;
+      default:
+        return DeviceType.unknown;
+    }
   }
 }

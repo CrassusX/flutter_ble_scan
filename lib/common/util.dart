@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_ble_scan/event/device_info.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import '../common/FitTool.dart';
@@ -179,9 +180,9 @@ showCustomBottomSheet(BuildContext ctx, Widget child, {double factor = 0.8}) {
   );
 }
 
-bool isSuccessfulScan(String? code) {
+(bool, DeviceType) isSuccessfulScan(String? code) {
   if (code == null || code.length < 2) {
-    return false; // 扫码失败，码长度不足
+    return (false, DeviceType.unknown); // 扫码失败，码长度不足
   }
 
   String firstLetter = code.substring(0, 1);
@@ -191,14 +192,16 @@ bool isSuccessfulScan(String? code) {
       firstLetter == 'Y' ||
       firstLetter == 'X' ||
       firstLetter == 'M') {
-    return true; // 扫码成功
+    DeviceType type = DeviceTypeEx.fromName(firstLetter);
+    return (true, type); // 扫码成功
   } else {
-    return false; // 扫码失败，不符合设备码前缀要求
+    return (false, DeviceType.unknown); // 扫码失败，不符合设备码前缀要求
   }
 }
 
 Color get normalColor => colorFromHex('#77B9A8');
 Color get greyColor => Colors.grey.shade600;
+Color get greyColor100 => Colors.grey.shade100;
 
 Color colorFromHex(String hexColor) {
   hexColor = hexColor.replaceAll('#', '');

@@ -62,7 +62,7 @@ class _SeatWifiStep1State extends State<SeatWifiStep1> {
                         if (states.contains(MaterialState.selected)) {
                           return normalColor;
                         }
-                        return greyColor;
+                        return greyColor100;
                       }),
                     ), // 复选框
                     InkWell(
