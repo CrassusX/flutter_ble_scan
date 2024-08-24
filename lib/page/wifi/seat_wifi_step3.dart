@@ -40,26 +40,28 @@ class SeatWifiStep3State extends State<SeatWifiStep3> {
     String? assetPath = GetSettingWifiService.to.deviceType.assetPath;
     return WrapScaffold(
       child: //通过ConstrainedBox来确保Stack占满屏幕
-          SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (assetPath != null)
-              Image.asset(
-                assetPath, // 图片路径
-                height: 180, // 设置图片高度
-              ),
-            _isSetting
-                ? SeatWifiStep3Setting(
-                    onNext: _onNextStep,
-                  )
-                : SeatWifiStep3Progress(
-                    progress: _progress,
-                  )
-          ],
-        ),
-      ),
+          Center(
+            child: SingleChildScrollView(
+                    child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (assetPath != null)
+                Image.asset(
+                  assetPath, // 图片路径
+                  height: 180, // 设置图片高度
+                ),
+              _isSetting
+                  ? SeatWifiStep3Setting(
+                      onNext: _onNextStep,
+                    )
+                  : SeatWifiStep3Progress(
+                      progress: _progress,
+                    )
+            ],
+                    ),
+                  ),
+          ),
     );
   }
 }

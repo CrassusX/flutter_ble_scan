@@ -16,14 +16,7 @@ class SeatWifiStep2 extends StatelessWidget {
     String? assetPath = GetSettingWifiService.to.deviceType.assetPath;
     return WrapScaffold(
       child: //通过ConstrainedBox来确保Stack占满屏幕
-          Stack(
-        alignment: Alignment.center, //指定未定位或部分定位widget的对齐方式
-        children: <Widget>[
-          Positioned(
-            top: -40,
-            left: 0,
-            right: 0,
-            bottom: 0,
+          Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -78,8 +71,6 @@ class SeatWifiStep2 extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
     );
   }
 }

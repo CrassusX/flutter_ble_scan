@@ -12,7 +12,6 @@ import 'package:flutter_ble_scan/lib/Websocket.dart';
 import 'package:flutter_ble_scan/page/wifi/seat_wifi_step2.dart';
 import 'package:get/get.dart';
 import 'package:flutter_ble_scan/lib/ble.dart' as ble;
-// import 'package:get_storage/get_storage.dart';
 
 const String ip = "wxconfig.he-info.cn";
 const String bleWifiInfo = 'bleWifiInfo';
