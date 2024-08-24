@@ -12,7 +12,7 @@ import 'package:flutter_ble_scan/lib/Websocket.dart';
 import 'package:flutter_ble_scan/page/wifi/seat_wifi_step2.dart';
 import 'package:get/get.dart';
 import 'package:flutter_ble_scan/lib/ble.dart' as ble;
-import 'package:get_storage/get_storage.dart';
+// import 'package:get_storage/get_storage.dart';
 
 const String ip = "wxconfig.he-info.cn";
 const String bleWifiInfo = 'bleWifiInfo';
@@ -366,14 +366,13 @@ class GetSettingWifiService extends GetxService {
 
   // 其他方法
   Future<String?> getId() async {
-    GetStorage box = GetStorage();
-    String? id_ = box.read("id");
+    String? id_ = StoreManger.getInstance().get('id');
     if (id_ == null) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       id_ =
           androidInfo.model + DateTime.now().millisecondsSinceEpoch.toString();
-      box.write("id", id_).catchError((e) {});
+      StoreManger.getInstance().setString('id', id_);
     }
     return id_;
   }

@@ -3,14 +3,9 @@ import 'package:flutter_ble_scan/page/wifi/seat_wifi_step1.dart';
 import 'package:flutter_ble_scan/page/wifi/seat_wifi_step2.dart';
 import 'package:flutter_ble_scan/page/wifi/seat_wifi_step3.dart';
 import 'package:flutter_ble_scan/scan/scanner_overlay.dart';
-import '../page/connected/wifi.dart';
-import '../page/index.dart';
-import '../page/login.dart';
+
 
 var routes = {
-  "/login": (contxt) => const Login(),
-  "/index": (contxt) => const index(),
-  "/wifi": (context) => const Wifi(),
   "/qrScan": (context) => const QrcodeScanner(),
   "/settingWifi": (context) => const SeatWifiStep3(),
   "/seatWifiStep1": (context) => const SeatWifiStep1(),
