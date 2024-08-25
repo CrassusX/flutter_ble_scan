@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+// import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-FlutterBlue flutterBlue = FlutterBlue.instance;
+// FlutterBluePlus flutterBlue = FlutterBluePlus;
 
 String findInput = "";
 double rssichange = -70;
@@ -180,16 +181,16 @@ void advertisDataFormatter(var a, item) {
 StreamSubscription? _subscription;
 
 Future<void> startBluetoothScanning() async {
-  _subscription = flutterBlue.scanResults.listen((List<ScanResult> results) {
-    // print(results.length);
+  _subscription = FlutterBluePlus.scanResults.listen((List<ScanResult> results) {
+    print(results.length);
     for (ScanResult result in results) {
       // if (result.device.id.toString().contains("A3:76")) {
       //   print("$result");
       // }
       Map d = {
         "updateTime": DateTime.now().millisecondsSinceEpoch,
-        "name": result.device.name,
-        "id": result.device.id.toString(),
+        "name": result.device.platformName,
+        "id": result.device.remoteId.toString(),
         "rssi": result.rssi,
         "device": result.device,
         "connectable": result.advertisementData.connectable
@@ -201,7 +202,7 @@ Future<void> startBluetoothScanning() async {
           advertisDataFormatter(a, d);
         }
       });
-      devices[result.device.id] = d;
+      devices[result.device.remoteId] = d;
       // print('Device found: ${result.device.name}, ${result.device.id}');
 
       Future.delayed(const Duration(microseconds: 300), () {
@@ -211,10 +212,11 @@ Future<void> startBluetoothScanning() async {
   });
 
   // 开始扫描附近的蓝牙设备
-  await flutterBlue.startScan(
+  await FlutterBluePlus.startScan(
     timeout: const Duration(days: 3),
-    allowDuplicates: true,
-    scanMode: ScanMode.lowLatency,
+    // allowDuplicates: true,
+    // scanMode: ScanMode.lowLatency,
+    // withNames:["a"],
   );
 }
 
@@ -222,38 +224,40 @@ Future<void> startBluetoothScanning() async {
 stopScan() async {
   _subscription?.cancel();
   _subscription = null;
-  await flutterBlue.stopScan();
+  await FlutterBluePlus.stopScan();
 }
 
 getOneConnectedDeviceProp(id) {
   return connectList[id];
 }
 
-void setOther(device, connectedDeviceProp, fun) async {
+void setOther(BluetoothDevice device, ConnectedDeviceProp? connectedDeviceProp, fun) async {
   try {
     List<BluetoothService> services = await device.discoverServices();
     for (var service in services) {
-      if (service.uuid.toString().toUpperCase() == myuuid) {
-        // print("serviece $service");
+      print("service.uuid ${service.uuid}");
+      if (service.uuid.str128.toUpperCase() == myuuid) {
+        print("serviece $service");
         for (BluetoothCharacteristic element in service.characteristics) {
           if (element.properties.notify) {
             await element.setNotifyValue(true);
-            connectedDeviceProp.createLisetenReceive(element);
+            connectedDeviceProp?.createLisetenReceive(element);
             continue;
           }
           if (element.properties.write) {
+            print("write $element");
             connectedDeviceProp?.writeCharacteristic = element;
           }
         }
       }
     }
-    connectList[connectedDeviceProp.id] = connectedDeviceProp;
+    connectList[connectedDeviceProp!.id] = connectedDeviceProp;
     connectedDeviceProp.createListenState();
     connectedDeviceProp.heartbeat();
     fun['success']?.call(connectedDeviceProp);
   } catch (e) {
     if (connectedDeviceProp != null) {
-      disconnect(connectedDeviceProp!);
+      disconnect(connectedDeviceProp);
     }
     fun['fail']?.call(e);
   }
@@ -263,7 +267,7 @@ void setOther(device, connectedDeviceProp, fun) async {
 void connectToDevice(Map fun) async {
   BluetoothDevice device = fun['device'];
   ConnectedDeviceProp? connectedDeviceProp =
-      getOneConnectedDeviceProp(device.id.toString());
+      getOneConnectedDeviceProp(device.remoteId.toString());
   if (connectedDeviceProp != null) {
     disconnect(connectedDeviceProp);
     Future.delayed(const Duration(seconds: 1), () {
@@ -299,7 +303,7 @@ void disconnect(ConnectedDeviceProp connectedDeviceProp) {
 Future<void> closeAll() async {
   findCall = null;
   _subscription?.cancel();
-  await flutterBlue.stopScan();
+  await FlutterBluePlus.stopScan();
   // 创建connectList的副本
   List<ConnectedDeviceProp> connectListCopy = List.from(connectList.values);
   if (connectListCopy.isNotEmpty) {
@@ -313,9 +317,9 @@ Future<void> closeAll() async {
 class ConnectedDeviceProp {
   Timer? heartbeatTimer;
   int _seq = 0;
-  dynamic connectDevice;
+  BluetoothDevice connectDevice;
   BluetoothCharacteristic? writeCharacteristic;
-  StreamSubscription<BluetoothDeviceState>? listenState;
+  StreamSubscription<BluetoothConnectionState>? listenState;
   StreamSubscription<List<int>>? lisetenReceive;
   Map fun;
   List receiveMethods = [];
@@ -330,7 +334,7 @@ class ConnectedDeviceProp {
   bool isClose = false;
 
   String get id {
-    return connectDevice.id.toString();
+    return connectDevice.remoteId.toString();
   }
 
   int sum_ab(dv) {
@@ -450,8 +454,8 @@ class ConnectedDeviceProp {
   }
 
   createListenState() {
-    listenState = connectDevice.state.listen((state) {
-      if (state == BluetoothDeviceState.disconnected) {
+    listenState = connectDevice.connectionState.listen((state) {
+      if (state == BluetoothConnectionState.disconnected) {
         fun['stateChange']?.call(state, connectDevice);
         isClose = true;
         disconnect(this);
@@ -460,7 +464,7 @@ class ConnectedDeviceProp {
   }
 
   createLisetenReceive(BluetoothCharacteristic element) {
-    lisetenReceive = element.value.listen((List<int> value) {
+    lisetenReceive = element.lastValueStream.listen((List<int> value) {
       if (value.isEmpty) {
         return;
       }
@@ -483,7 +487,7 @@ class ConnectedDeviceProp {
     if (lisetenReceive != null) {
       lisetenReceive?.cancel();
     }
-    connectDevice?.disconnect();
+    connectDevice.disconnect();
   }
 
   int get seq {
