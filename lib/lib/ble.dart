@@ -389,18 +389,9 @@ class ConnectedDeviceProp {
     sendArr.insert(0, {"d": d_, "success": success, "fail": fail});
   }
 
+  // 写入数据
   void write(Uint8List d, Function? success, Function? fail, {int exec = 100}) {
     if (writeCharacteristic != null) {
-      // try {
-      //   if (d[3] == 8 * 16 + 3) {
-      //     print(
-      //         "blewrite s = $sendExecAverage d = ${utf8.decode(d.sublist(4))}");
-      //   } else {
-      //     print("ble last write d = ${d[3]}");
-      //   }
-      // } catch (e) {
-      //   print("write logprint error $e");
-      // }
       writeCharacteristic?.write(d, withoutResponse: true).then((e) {
         // print("write success $e");
         if (exec > 95) {
@@ -416,7 +407,6 @@ class ConnectedDeviceProp {
         }
         success?.call();
       }).catchError((e) {
-        // print("exec = $exec , $e");
         if (exec < 0) {
           fail?.call();
         }
@@ -549,18 +539,6 @@ class ConnectedDeviceProp {
             logData = [...endLogValue, ...abData.sublist(0, index)];
             endLogValue = abData.sublist(index);
           }
-          // if (index == -1) {
-          //   index = abData.length;
-          // }
-          // if(endLogValue.isNotEmpty) {
-          //   logData = [...endLogValue, ...abData.sublist(0, index)];
-          //   endLogValue = [];
-          // } else {
-          //   logData = [...abData.sublist(0, index)];
-          // }
-          // if(index != abData.length) {
-          //   endLogValue = abData.sublist(index);
-          // }
         } else {
           if (endLogValue.isNotEmpty) {
             logData = [...endLogValue, ...abData];
