@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_ble_scan/common/store_manger.dart';
@@ -368,10 +369,17 @@ class GetSettingWifiService extends GetxService {
     String? id_ = StoreManger.getInstance().get('id');
     if (id_ == null) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      id_ =
-          androidInfo.model + DateTime.now().millisecondsSinceEpoch.toString();
-      StoreManger.getInstance().setString('id', id_);
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        id_ = androidInfo.model +
+            DateTime.now().millisecondsSinceEpoch.toString();
+      } else if (Platform.isIOS) {
+        IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+        id_ = iosInfo.model +
+            DateTime.now().millisecondsSinceEpoch.toString();
+      }
+      print(" id_ $id_");
+      StoreManger.getInstance().setString('id', id_ ?? 'modelX');
     }
     return id_;
   }

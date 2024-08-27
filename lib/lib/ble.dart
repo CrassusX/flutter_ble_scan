@@ -203,7 +203,7 @@ Future<void> startBluetoothScanning() async {
         }
       });
       devices[result.device.remoteId] = d;
-      // print('Device found: ${result.device.name}, ${result.device.id}');
+      print('Device found: ${d}, ${devices}');
 
       Future.delayed(const Duration(microseconds: 300), () {
         find();
