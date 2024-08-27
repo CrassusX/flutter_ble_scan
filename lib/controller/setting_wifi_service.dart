@@ -116,7 +116,7 @@ class GetSettingWifiService extends GetxService {
 
   // 开始蓝牙扫描
   _startScanBle() {
-    ble.findInput = 'AITH';
+    ble.findInput = 'AITH-V2';
     ble.start((List bleList) {
       if (bleList.isNotEmpty) {
         mBleList.value = bleList;

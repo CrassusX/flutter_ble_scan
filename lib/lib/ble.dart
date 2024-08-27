@@ -92,6 +92,7 @@ void find() {
   result.sort((a, b) {
     return b['rssi'] - a['rssi'];
   });
+  print("object $devices");
   findCall?.call(result);
 }
 
@@ -216,7 +217,7 @@ Future<void> startBluetoothScanning() async {
     timeout: const Duration(days: 3),
     // allowDuplicates: true,
     // scanMode: ScanMode.lowLatency,
-    // withNames:["a"],
+    withNames:[findInput],
   );
 }
 
