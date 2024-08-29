@@ -141,7 +141,7 @@ class VerticalProgressTip extends StatelessWidget {
   bool get hasComplete => progress >= 100;
 
   String get progressText =>
-      hasComplete ? "100%" : "${progress.toStringAsFixed(0)}%";
+      hasComplete ? "100" : progress.toStringAsFixed(0);
 
   @override
   Widget build(BuildContext context) {

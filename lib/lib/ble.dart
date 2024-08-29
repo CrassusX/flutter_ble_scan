@@ -23,6 +23,7 @@ Map devices = {};
 
 Map<String, ConnectedDeviceProp> connectList = {};
 
+
 start(Function fun) async {
   findCall = fun;
   requestBluetoothPermission();
